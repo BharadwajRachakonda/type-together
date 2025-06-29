@@ -21,57 +21,63 @@ export default function NavBar() {
 
   return (
     <LayoutGroup>
-      <div className="fixed left-0 right-0 bottom-5 w-full flex justify-center">
+      <div className="fixed left-0 right-0 bottom-0 w-full flex justify-center">
         <motion.div
-          layoutRoot
-          className=" glass flex justify-around items-center p-4 bg-gray-900/65 rounded-full backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 md:mx-8 mx-2 w-full max-w-4xl transition-all ease-in-out duration-300"
+          layout="position"
+          className="relative left-0 right-0 bottom-5 glass flex justify-around items-center p-4 bg-gray-900/65 rounded-full backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 md:mx-8 mx-2 w-full max-w-4xl transition-all ease-in-out duration-300"
         >
           {links.map((link) => (
-            <AnimatePresence key={link.href}>
-              <Link
-                href={link.href}
-                className={`flex flex-col items-center group cursor-pointer ${
-                  pathname === link.href ? "text-blue-300" : "text-white"
-                }`}
+            <AnimatePresence mode="wait" key={link.href}>
+              <motion.div
+                layout
+                key={link.href}
+                className="flex flex-col items-center"
               >
-                <motion.div
-                  initial={{ scale: 1 }}
-                  whileTap={{ scale: 1.5 }}
-                  transition={{
-                    delay: 0.2,
-                    duration: 0.2,
-                    type: "spring",
-                    stiffness: 300,
-                  }}
-                  layout
+                <Link
+                  href={link.href}
+                  className={`flex flex-col items-center group cursor-pointer ${
+                    pathname === link.href ? "text-blue-300" : "text-white"
+                  }`}
                 >
-                  {pathname === link.href && (
-                    <motion.div
-                      layoutId="active"
-                      className="h-2 w-2 rounded-full bg-red-500"
-                    ></motion.div>
-                  )}
-                  <FontAwesomeIcon
-                    icon={link.icon}
-                    className="md:h-10 h-6 m-2"
-                  />
-                </motion.div>
-                {pathname === link.href && (
-                  <motion.p
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
+                  <motion.div
+                    initial={{ scale: 1 }}
+                    whileTap={{ scale: 1.5 }}
                     transition={{
+                      delay: 0.2,
                       duration: 0.2,
                       type: "spring",
                       stiffness: 300,
                     }}
-                    className="text-xs md:text-sm"
+                    layout
                   >
-                    {link.label}
-                  </motion.p>
-                )}
-              </Link>
+                    {pathname === link.href && (
+                      <motion.div
+                        layoutId="active"
+                        className="h-2 w-2 rounded-full bg-red-500"
+                      ></motion.div>
+                    )}
+                    <FontAwesomeIcon
+                      icon={link.icon}
+                      className="md:h-10 h-6 m-2"
+                    />
+                  </motion.div>
+                  {pathname === link.href && (
+                    <motion.p
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{
+                        duration: 0.2,
+                        type: "spring",
+                        stiffness: 300,
+                      }}
+                      className="text-xs md:text-sm"
+                    >
+                      {link.label}
+                    </motion.p>
+                  )}
+                </Link>
+              </motion.div>
             </AnimatePresence>
           ))}
         </motion.div>
