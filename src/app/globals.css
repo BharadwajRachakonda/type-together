@@ -24,3 +24,55 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.glass {
+  position: relative;
+  z-index: 0; /* Keep at 0 */
+  border-radius: 50px;
+}
+
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2; /* Changed to -2 to go further behind */
+  translate: 6px -4px;
+  border-radius: 50px;
+  background-color: rgba(0, 0, 0, 0.2); /* Subtle dark background */
+  background-image: radial-gradient(
+    circle farthest-side at right top,
+    hsl(0, 0%, 100%) 0%,
+    hsla(0, 0%, 0%, 0) 50% transparent 50%
+  );
+}
+
+.glass::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -10000;
+  translate: 6px -6px;
+  border-radius: 50px;
+  filter: blur(20px);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.09) 0%,
+    rgba(255, 255, 255, 0.249) 100%
+  );
+}
+
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #ff0000;
+}
