@@ -14,7 +14,7 @@ const page = () => {
       layoutRoot
       initial={{ filter: "blur(10px)", y: 50 }}
       animate={{ filter: "blur(0px)", y: 0 }}
-      transition={{ duration: 3, type: "spring", stiffness: 300 }}
+      transition={{ duration: 3, type: "spring", stiffness: 200 }}
     >
       Type Together
     </motion.div>

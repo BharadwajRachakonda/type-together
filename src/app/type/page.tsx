@@ -155,22 +155,18 @@ const Page = () => {
   }, [written, text]);
 
   return (
-    <motion.div
-      initial={{ y: 50 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, type: "spring", stiffness: 300 }}
-    >
+    <div>
       <Toaster position="top-left" />
       <motion.div
         layout
         style={{ filter: "blur(10px)", scaleX, backgroundColor }}
-        transition={{ type: "spring", stiffness: 300 }}
+        transition={{ type: "spring", stiffness: 200 }}
         className="w-full h-2 fixed top-0 left-0 z-50 origin-left"
       ></motion.div>
       <motion.div
         layoutRoot
-        initial={{ filter: "blur(10px)" }}
-        animate={{ filter: "blur(0px)" }}
+        initial={{ y: 50, filter: "blur(10px)" }}
+        animate={{ y: 0, filter: "blur(0px)" }}
         transition={{ duration: 3, type: "spring", stiffness: 300 }}
         className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center max-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
       >
@@ -267,7 +263,7 @@ const Page = () => {
           </div>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 

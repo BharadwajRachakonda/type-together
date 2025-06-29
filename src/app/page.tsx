@@ -64,7 +64,10 @@ export default function Home() {
               </span>
             </div>
             <hr className="border-sky-200/20 border-dashed border-[1px] w-screen" />
-            <div
+            <motion.div
+              initial={{ opacity: 0, borderTop: "20px solid transparent" }}
+              whileInView={{ opacity: 1, borderTop: "0px solid transparent" }}
+              transition={{ duration: 0.5 }}
               id="description"
               className="max-w-[800px] w-full px-4 md:px-8 text-sky-100/90 leading-relaxed tracking-wide text-[1rem] md:text-lg flex flex-col gap-4"
             >
@@ -105,10 +108,16 @@ export default function Home() {
               <br />
               <br />
               <br />
-            </div>
+            </motion.div>
           </motion.div>
         </div>
-        <Footer />
+        <motion.div
+          initial={{ opacity: 0, borderTop: "20px solid transparent" }}
+          whileInView={{ opacity: 1, borderTop: "0px solid transparent" }}
+          transition={{ duration: 0.5 }}
+        >
+          <Footer />
+        </motion.div>
       </motion.div>
     </LayoutGroup>
   );

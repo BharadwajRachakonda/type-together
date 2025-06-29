@@ -1,6 +1,5 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import {
   faLinkedin,
   faHackerrank,
@@ -32,10 +31,7 @@ function Footer() {
                     isLightMode ? "border-black" : "border-white"
                   }`}
                 >
-                  <FontAwesomeIcon
-                    icon={faLinkedin}
-                    className="fa-brands fa-linkedin group-hover:animate-bounce"
-                  />
+                  <FontAwesomeIcon icon={faLinkedin} />
                   Linkedin
                 </div>
               </a>
@@ -50,10 +46,7 @@ function Footer() {
                     isLightMode ? "border-black" : "border-white"
                   }`}
                 >
-                  <FontAwesomeIcon
-                    icon={faLaptopCode}
-                    className="fa-solid fa-laptop-code group-hover:animate-bounce"
-                  />
+                  <FontAwesomeIcon icon={faLaptopCode} />
                   LeetCode
                 </div>
               </a>
@@ -68,10 +61,7 @@ function Footer() {
                     isLightMode ? "border-black" : "border-white"
                   }`}
                 >
-                  <FontAwesomeIcon
-                    icon={faHackerrank}
-                    className="fa-brands fa-hackerrank group-hover:animate-bounce"
-                  />
+                  <FontAwesomeIcon icon={faHackerrank} />
                   HackerRank
                 </div>
               </a>
@@ -83,10 +73,7 @@ function Footer() {
                     isLightMode ? "border-black" : "border-white"
                   }`}
                 >
-                  <FontAwesomeIcon
-                    icon={faGithub}
-                    className="fa-brands fa-github group-hover:animate-bounce"
-                  />
+                  <FontAwesomeIcon icon={faGithub} />
                   GitHub
                 </div>
               </a>
