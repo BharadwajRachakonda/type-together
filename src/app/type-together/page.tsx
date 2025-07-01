@@ -7,14 +7,14 @@ import {
   useTransform,
   useSpring,
 } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { io, Socket } from "socket.io-client";
 import { Toaster, toast } from "react-hot-toast";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 
-const Page = () => {
+function Page() {
   const timing = useMotionValue(0);
   const x = useTransform(timing, [0, 60], ["0%", "100%"]);
   const prevIndex = useRef(0);
@@ -197,7 +197,7 @@ const Page = () => {
   };
 
   useEffect(() => {
-    const socket = io("https://type-together-backend.onrender.com/", {
+    const socket = io(process.env.URL, {
       transports: ["websocket"],
       autoConnect: false,
     });
@@ -554,6 +554,14 @@ const Page = () => {
       </motion.div>
     </div>
   );
-};
+}
 
-export default Page;
+function PageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Page />
+    </Suspense>
+  );
+}
+
+export default PageWrapper;
