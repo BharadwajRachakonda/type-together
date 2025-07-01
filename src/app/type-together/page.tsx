@@ -197,7 +197,7 @@ function Page() {
   };
 
   useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+    const socket = io("https://type-together-backend.onrender.com", {
       transports: ["websocket", "polling"],
       autoConnect: true,
     });
