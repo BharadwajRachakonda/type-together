@@ -197,9 +197,9 @@ function Page() {
   };
 
   useEffect(() => {
-    const socket = io(process.env.URL, {
-      transports: ["websocket"],
-      autoConnect: false,
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+      transports: ["websocket", "polling"],
+      autoConnect: true,
     });
 
     socketRef.current = socket;
