@@ -174,6 +174,7 @@ function Page() {
   const callbackjoinroom = (res: any) => {
     if (res.error) {
       toast.error(res.error);
+      setIsSet(false);
     }
     if (res.success) {
       toast.success(res.success);
@@ -197,11 +198,8 @@ function Page() {
   };
 
   useEffect(() => {
-    const env = process.env.NEXT_PUBLIC_ENVIRONMENT;
-    const url =
-      env === "development"
-        ? "http://localhost:8000"
-        : process.env.NEXT_PUBLIC_SOCKET_URL;
+    const url = process.env.NEXT_PUBLIC_SOCKET_URL;
+    console.log("Connecting to socket at:", url);
     const socket = io(url, {
       transports: ["websocket", "polling"],
       autoConnect: true,
@@ -309,7 +307,7 @@ function Page() {
   }, [end]);
 
   return (
-    <div className="max-h-screen">
+    <div className="overflow-hidden max-h-screen">
       <Toaster position="top-left" />
       <motion.div
         layout
@@ -512,54 +510,56 @@ function Page() {
           )}
         </AnimatePresence>
       </motion.div>
-      <textarea
-        name="text"
-        id="text"
-        className="fixed top-0 left-0 opacity-0"
-        onFocus={() => {
-          setStarted(true);
-        }}
-        onKeyDown={(e) => {
-          if (
-            e.key === "Backspace" ||
-            e.key === "Delete" ||
-            e.ctrlKey ||
-            e.metaKey ||
-            startsIn > 0
-          ) {
-            e.preventDefault();
-          } else {
-            if (e.key === text[index]) {
-              setIndex((prev) => prev + 1);
-              const nextText = getNext(text, index, otherIndex);
-              setDisplayText(() => nextText);
+      {isSet && (
+        <textarea
+          name="text"
+          id="text"
+          className="fixed bottom-0 left-0 opacity-0"
+          onFocus={() => {
+            setStarted(true);
+          }}
+          onKeyDown={(e) => {
+            if (
+              e.key === "Backspace" ||
+              e.key === "Delete" ||
+              e.ctrlKey ||
+              e.metaKey ||
+              startsIn > 0
+            ) {
+              e.preventDefault();
             } else {
-              const currText =
-                "<span class='text-green-500/65'>" +
-                text.slice(0, index) +
-                "</span>" +
-                text.slice(index);
-              const tempText =
-                "<span class='text-green-500/65'>" +
-                text.slice(0, index) +
-                "</span>" +
-                "<span class='text-red-500/65'>" +
-                text[index] +
-                "</span>" +
-                text.slice(index + 1);
-              setTimeout(() => {
-                setDisplayText(() => tempText);
-              }, 100);
-              setDisplayText(() => currText);
+              if (e.key === text[index]) {
+                setIndex((prev) => prev + 1);
+                const nextText = getNext(text, index, otherIndex);
+                setDisplayText(() => nextText);
+              } else {
+                const currText =
+                  "<span class='text-green-500/65'>" +
+                  text.slice(0, index) +
+                  "</span>" +
+                  text.slice(index);
+                const tempText =
+                  "<span class='text-green-500/65'>" +
+                  text.slice(0, index) +
+                  "</span>" +
+                  "<span class='text-red-500/65'>" +
+                  text[index] +
+                  "</span>" +
+                  text.slice(index + 1);
+                setTimeout(() => {
+                  setDisplayText(() => tempText);
+                }, 100);
+                setDisplayText(() => currText);
+              }
             }
-          }
-        }}
-        autoComplete="off"
-        value={written}
-        onChange={(e) => {
-          setWritten(e.target.value);
-        }}
-      ></textarea>
+          }}
+          autoComplete="off"
+          value={written}
+          onChange={(e) => {
+            setWritten(e.target.value);
+          }}
+        ></textarea>
+      )}
     </div>
   );
 }

@@ -18,7 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.className} antialiased`}>
         <div>{children}</div>
-        <NavBar />
+        <footer>
+          <NavBar />
+        </footer>
       </body>
     </html>
   );
