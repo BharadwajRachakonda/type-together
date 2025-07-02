@@ -175,7 +175,7 @@ const Page = () => {
 
           <div className="flex flex-col items-center justify-center gap-4">
             <div>{timer} seconds remaining</div>
-            <div className="flex flex-col items-center p-9 max-w-[600px] h-60 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px]">
+            <div className="flex flex-col items-center p-9 max-w-[600px] h-60 brightness-150 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px]">
               <div className="max-w-[500px] h-40 overflow-hidden">
                 <motion.div
                   id="static-text-container"

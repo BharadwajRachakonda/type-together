@@ -24,7 +24,7 @@ export default function NavBar() {
       <div className="fixed left-0 right-0 bottom-0 w-full flex justify-center">
         <motion.div
           layout="position"
-          className="relative left-0 right-0 bottom-5 glass flex justify-around items-center p-4 bg-gray-900/65 rounded-full backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 md:mx-8 mx-2 w-full max-w-4xl transition-all ease-in-out duration-300"
+          className="relative left-0 right-0 bottom-5 glass flex justify-around items-center p-4 bg-gray-900/65 rounded-full backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 brightness-150 md:mx-8 mx-2 w-full max-w-4xl transition-all ease-in-out duration-300"
         >
           {links.map((link) => (
             <AnimatePresence mode="wait" key={link.href}>
