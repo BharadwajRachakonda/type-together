@@ -400,7 +400,7 @@ function Page() {
                       }}
                       exit={{ opacity: 0, height: 0 }}
                       layoutRoot
-                      className={`mb-10 <md:mb-0></md:mb-0> flex flex-col items-center p-9 h-60 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px] max-w-[600px]`}
+                      className={`mb-10 <md:mb-0></md:mb-0> flex flex-col items-center p-9 m-4 h-60 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px] max-w-[600px]`}
                     >
                       <div
                         id="origin"
