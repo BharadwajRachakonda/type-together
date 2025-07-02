@@ -175,6 +175,8 @@ function Page() {
     if (res.error) {
       toast.error(res.error);
       setIsSet(false);
+      setEnd(false);
+      setIndex(0);
     }
     if (res.success) {
       toast.success(res.success);
@@ -355,7 +357,7 @@ function Page() {
                       <h1 className="text-4xl font-bold">Type Together</h1>
 
                       <input
-                        className="font-extrabold text-6xl border-gray-500/40 border-2 bg-gray-900/65 max-w-70 tracking-widest px-4 py-2 text-center rounded-3xl text-gray-500 focus:shadow-[0_35px_60px_-15px_rgba(255,255,255,0.3)] focus:outline-none focus:border-gray-900/65 transition-all duration-300 ease-in-out"
+                        className="z-10 font-extrabold text-6xl border-gray-500/40 border-2 bg-gray-900/65 max-w-70 tracking-widest px-4 py-2 text-center rounded-3xl text-gray-500 focus:shadow-[0_35px_60px_-15px_rgba(255,255,255,0.3)] focus:outline-none focus:border-gray-900/65 transition-all duration-300 ease-in-out"
                         maxLength={4}
                         minLength={4}
                         type="text"
@@ -424,6 +426,9 @@ function Page() {
                         <label
                           htmlFor="text"
                           className="flex justify-center items-center slide cursor-pointer px-5 py-2 md:hover:scale-110 text-white rounded-full bg-gray-700/65 transition-all duration-200 ease-out"
+                          onClick={() => {
+                            setStarted(true);
+                          }}
                         >
                           <div>Start</div>
                         </label>
@@ -510,22 +515,27 @@ function Page() {
           )}
         </AnimatePresence>
       </motion.div>
-      {isSet && (
+      {isSet && isMedium && (
         <textarea
           name="text"
           id="text"
-          className="opacity-0"
-          onFocus={() => {
-            setStarted(true);
+          className="absolute top-0 opacity-0 -z-50"
+          autoComplete="off"
+          autoCorrect="off"
+          onPaste={(e) => {
+            e.preventDefault();
+          }}
+          onCut={(e) => {
+            e.preventDefault();
+          }}
+          onCopy={(e) => {
+            e.preventDefault();
+          }}
+          onSelect={(e) => {
+            e.preventDefault();
           }}
           onKeyDown={(e) => {
-            if (
-              e.key === "Backspace" ||
-              e.key === "Delete" ||
-              e.ctrlKey ||
-              e.metaKey ||
-              startsIn > 0
-            ) {
+            if (e.key === "Backspace" || e.key === "Delete" || startsIn > 0) {
               e.preventDefault();
             } else {
               if (e.key === text[index]) {
@@ -558,6 +568,70 @@ function Page() {
           value={written}
           onChange={(e) => {
             setWritten(e.target.value);
+          }}
+        ></textarea>
+      )}
+      {isSet && !isMedium && (
+        <textarea
+          name="text"
+          id="text"
+          className="absolute bottom-0 left-0 opacity-0 -z-50"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
+          autoFocus
+          value={written}
+          onPaste={(e) => e.preventDefault()}
+          onCut={(e) => e.preventDefault()}
+          onCopy={(e) => e.preventDefault()}
+          onSelect={(e) => e.preventDefault()}
+          onKeyDown={(e) => {
+            // Block typing before countdown ends
+            if (startsIn > 0) {
+              e.preventDefault();
+            }
+          }}
+          onChange={(e) => {
+            const input = e.target.value;
+
+            // Allow normal typing during game
+            if (startsIn > 0) {
+              return setWritten("");
+            }
+
+            // Only validate newly typed char
+            if (input.length > written.length) {
+              const newChar = input[input.length - 1];
+
+              if (newChar === text[index]) {
+                const newIndex = index + 1;
+                setIndex(newIndex);
+                const nextText = getNext(text, newIndex - 1, otherIndex);
+                setDisplayText(nextText);
+              } else {
+                // Temporary highlight wrong char
+                const currText =
+                  "<span class='text-green-500/65'>" +
+                  text.slice(0, index) +
+                  "</span>" +
+                  text.slice(index);
+                const tempText =
+                  "<span class='text-green-500/65'>" +
+                  text.slice(0, index) +
+                  "</span>" +
+                  "<span class='text-red-500/65'>" +
+                  text[index] +
+                  "</span>" +
+                  text.slice(index + 1);
+                setDisplayText(currText);
+                setTimeout(() => {
+                  setDisplayText(tempText);
+                }, 100);
+              }
+            }
+
+            // Always allow user to type freely
+            setWritten(input);
           }}
         ></textarea>
       )}
