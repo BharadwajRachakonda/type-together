@@ -6,6 +6,7 @@ import {
   useMotionValue,
   useSpring,
   LayoutGroup,
+  AnimatePresence,
 } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,6 +14,7 @@ import {
   faPlay,
   faPause,
 } from "@fortawesome/free-solid-svg-icons";
+import Loading from "@/app/components/Loading";
 import toast, { Toaster } from "react-hot-toast";
 
 const Page = () => {
@@ -39,6 +41,7 @@ const Page = () => {
   const [timer, setTimer] = useState(60);
   const started = useRef(false);
   const lastScrollWordCount = useRef(0);
+  const [loading, setLoading] = useState(false);
 
   let interval = useRef<NodeJS.Timeout | null>(null);
   const startTimer = () => {
@@ -120,19 +123,17 @@ const Page = () => {
       currText.length
     );
 
-    // Scroll after every 9 words typed
     const wordCount = written.trim().split(/\s+/).filter(Boolean).length;
     const lastCount = lastScrollWordCount.current;
     const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
     const scrollWordThreshold = isMobile ? 5 : 10;
     if (wordCount - lastCount >= scrollWordThreshold) {
-      const newOffset = scrollOffset - 36; // adjust as per line height
+      const newOffset = scrollOffset - 36;
       scrollY.set(newOffset);
       setScrollOffset(newOffset);
       lastScrollWordCount.current = wordCount;
     }
 
-    // Calculate speed
     if (startTimeRef.current) {
       const endTime = endTimeRef.current ?? Date.now();
       const durationMin = (endTime - startTimeRef.current) / 1000 / 60;
@@ -175,58 +176,113 @@ const Page = () => {
 
           <div className="flex flex-col items-center justify-center gap-4">
             <div>{timer} seconds remaining</div>
-            <div className="flex flex-col items-center p-9 max-w-[600px] h-60 brightness-150 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px]">
-              <div className="max-w-[500px] h-40 overflow-hidden">
-                <motion.div
-                  id="static-text-container"
-                  initial={{ y: 0 }}
-                  animate={{ y: scrollY.get() }}
-                  transition={{ ease: "easeInOut", duration: 0.2, delay: 0.2 }}
-                  className="prose text-2xl will-change-transform"
-                  dangerouslySetInnerHTML={{ __html: displayText }}
-                />
-              </div>
-              <div className="flex items-center gap-4">
-                <div
-                  className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
-                  onClick={() => {
-                    setWritten("");
-                    setDisplayText(() => text);
-                    setSpeed(0);
-                    setAccuracy(0);
-                    setEnd(false);
-                    setTimer(60);
-                    setCount(0);
-                    timing.set(0);
-                    started.current = false;
-                    scrollY.set(0);
-                    setScrollOffset(0);
-                    if (interval.current) {
-                      clearInterval(interval.current);
-                    }
-                    lastScrollWordCount.current = 0;
-                  }}
-                >
-                  <FontAwesomeIcon icon={faRotateLeft} />
+            <AnimatePresence mode="wait">
+              <motion.div
+                layout
+                transition={{
+                  duration: 0.2,
+                  type: "spring",
+                  stiffness: 100,
+                }}
+              >
+                <div className="flex flex-col items-center p-9 max-w-[600px] h-60 brightness-150 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px]">
+                  <div className="max-w-[500px] h-40 overflow-hidden">
+                    {loading ? (
+                      <motion.div layout key="loading">
+                        <Loading />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="static-text"
+                        layout
+                        id="static-text-container"
+                        initial={{ y: 0 }}
+                        animate={{ y: scrollY.get() }}
+                        transition={{
+                          ease: "easeInOut",
+                          duration: 0.2,
+                          delay: 0.2,
+                        }}
+                        className="prose text-2xl will-change-transform"
+                        dangerouslySetInnerHTML={{ __html: displayText }}
+                      />
+                    )}
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
+                      onClick={() => {
+                        setWritten("");
+                        setDisplayText(() => text);
+                        setSpeed(0);
+                        setAccuracy(0);
+                        setEnd(false);
+                        setTimer(60);
+                        setCount(0);
+                        timing.set(0);
+                        started.current = false;
+                        scrollY.set(0);
+                        setScrollOffset(0);
+                        if (interval.current) {
+                          clearInterval(interval.current);
+                        }
+                        lastScrollWordCount.current = 0;
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faRotateLeft} />
+                    </div>
+                    <label
+                      htmlFor="text"
+                      className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
+                      onClick={async () => {
+                        setLoading(true);
+                        try {
+                          const res = await fetch(
+                            "http://localhost:8000/gemini",
+                            {
+                              method: "GET",
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                            }
+                          );
+                          if (!res.ok) {
+                            toast.error(
+                              "Failed to fetch text. Please try again."
+                            );
+                            return;
+                          }
+                          const data = await res.json();
+                          if (!data.text) {
+                            toast.error("No text received. Please try again.");
+                            return;
+                          }
+                          setText(data.text);
+                          setDisplayText(data.text);
+                          toast.success(
+                            count === 0 ? "Continue to Type" : "Reset and Type"
+                          );
+                        } catch (err) {
+                          toast.error("An error occurred while fetching text.");
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                    >
+                      <LayoutGroup>
+                        <motion.div layout>
+                          {count !== 0 ? (
+                            <FontAwesomeIcon icon={faPause} />
+                          ) : (
+                            <FontAwesomeIcon icon={faPlay} />
+                          )}
+                        </motion.div>
+                      </LayoutGroup>
+                    </label>
+                  </div>
                 </div>
-                <label
-                  htmlFor="text"
-                  className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
-                  onClick={() => {
-                    const text =
-                      count === 0 ? "Continue to Type" : "Reset and Type";
-                    toast.success(text);
-                  }}
-                >
-                  <LayoutGroup>
-                    <motion.div layout>
-                      {count !== 0 && <FontAwesomeIcon icon={faPause} />}
-                      {count === 0 && <FontAwesomeIcon icon={faPlay} />}
-                    </motion.div>
-                  </LayoutGroup>
-                </label>
-              </div>
-            </div>
+              </motion.div>
+            </AnimatePresence>
             <textarea
               id="text"
               name="text"
