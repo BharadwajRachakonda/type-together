@@ -553,7 +553,8 @@ function Page() {
               }
             }
           }}
-          autoComplete="off"
+          spellCheck="false"
+          autoFocus
           value={written}
           onChange={(e) => {
             setWritten(e.target.value);
