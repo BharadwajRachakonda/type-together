@@ -514,7 +514,7 @@ function Page() {
         <textarea
           name="text"
           id="text"
-          className="fixed right-0 left-0"
+          className="opacity-0"
           onFocus={() => {
             setStarted(true);
           }}
