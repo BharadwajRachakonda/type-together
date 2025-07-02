@@ -197,7 +197,12 @@ function Page() {
   };
 
   useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+    const env = process.env.NEXT_PUBLIC_ENVIRONMENT;
+    const url =
+      env === "development"
+        ? "http://localhost:8000"
+        : process.env.NEXT_PUBLIC_SOCKET_URL;
+    const socket = io(url, {
       transports: ["websocket", "polling"],
       autoConnect: true,
     });
@@ -304,7 +309,7 @@ function Page() {
   }, [end]);
 
   return (
-    <div>
+    <div className="max-h-screen">
       <Toaster position="top-left" />
       <motion.div
         layout
@@ -317,7 +322,7 @@ function Page() {
         initial={{ filter: "blur(10px)", y: 50 }}
         animate={{ filter: "blur(0px)", y: 0 }}
         transition={{ duration: 3, type: "spring", stiffness: 200 }}
-        className="flex flex-col items-center justify-center text-center min-h-screen gap-10"
+        className="flex flex-col h-screen items-center justify-center text-center gap-10"
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -417,54 +422,6 @@ function Page() {
                           dangerouslySetInnerHTML={{ __html: displayText }}
                         />
                       </div>
-                      <textarea
-                        name="text"
-                        id="text"
-                        className="opacity-0 h-0.5 w-0.5"
-                        onFocus={() => {
-                          setStarted(true);
-                        }}
-                        onKeyDown={(e) => {
-                          if (
-                            e.key === "Backspace" ||
-                            e.key === "Delete" ||
-                            e.ctrlKey ||
-                            e.metaKey ||
-                            startsIn > 0
-                          ) {
-                            e.preventDefault();
-                          } else {
-                            if (e.key === text[index]) {
-                              setIndex((prev) => prev + 1);
-                              const nextText = getNext(text, index, otherIndex);
-                              setDisplayText(() => nextText);
-                            } else {
-                              const currText =
-                                "<span class='text-green-500/65'>" +
-                                text.slice(0, index) +
-                                "</span>" +
-                                text.slice(index);
-                              const tempText =
-                                "<span class='text-green-500/65'>" +
-                                text.slice(0, index) +
-                                "</span>" +
-                                "<span class='text-red-500/65'>" +
-                                text[index] +
-                                "</span>" +
-                                text.slice(index + 1);
-                              setTimeout(() => {
-                                setDisplayText(() => tempText);
-                              }, 100);
-                              setDisplayText(() => currText);
-                            }
-                          }
-                        }}
-                        autoComplete="off"
-                        value={written}
-                        onChange={(e) => {
-                          setWritten(e.target.value);
-                        }}
-                      ></textarea>
                       <div className="flex items-center justify-between gap-4">
                         <label
                           htmlFor="text"
@@ -555,6 +512,54 @@ function Page() {
           )}
         </AnimatePresence>
       </motion.div>
+      <textarea
+        name="text"
+        id="text"
+        className="fixed top-0 left-0 opacity-0"
+        onFocus={() => {
+          setStarted(true);
+        }}
+        onKeyDown={(e) => {
+          if (
+            e.key === "Backspace" ||
+            e.key === "Delete" ||
+            e.ctrlKey ||
+            e.metaKey ||
+            startsIn > 0
+          ) {
+            e.preventDefault();
+          } else {
+            if (e.key === text[index]) {
+              setIndex((prev) => prev + 1);
+              const nextText = getNext(text, index, otherIndex);
+              setDisplayText(() => nextText);
+            } else {
+              const currText =
+                "<span class='text-green-500/65'>" +
+                text.slice(0, index) +
+                "</span>" +
+                text.slice(index);
+              const tempText =
+                "<span class='text-green-500/65'>" +
+                text.slice(0, index) +
+                "</span>" +
+                "<span class='text-red-500/65'>" +
+                text[index] +
+                "</span>" +
+                text.slice(index + 1);
+              setTimeout(() => {
+                setDisplayText(() => tempText);
+              }, 100);
+              setDisplayText(() => currText);
+            }
+          }
+        }}
+        autoComplete="off"
+        value={written}
+        onChange={(e) => {
+          setWritten(e.target.value);
+        }}
+      ></textarea>
     </div>
   );
 }
