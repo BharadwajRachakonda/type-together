@@ -13,6 +13,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
+import Loading from "@/app/components/Loading";
 
 function Page() {
   const timing = useMotionValue(0);
@@ -36,6 +37,7 @@ function Page() {
   const [end, setEnd] = useState(false);
   const [won, setWon] = useState<any>(null);
   const [isMedium, setIsMedium] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setText(
@@ -60,6 +62,12 @@ function Page() {
       socketRef.current?.emit("end");
     }
   }, [end]);
+
+  useEffect(() => {
+    if (isLoading) {
+      socketRef.current?.emit("loading");
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const handler = () => {
@@ -224,8 +232,18 @@ function Page() {
       console.error("Connection error:", err);
     });
 
+    socket.on("loading", () => {
+      setIsLoading(true);
+      console.log("Loading...");
+    });
+
     socket.on("start", () => {
       setStarted(true);
+    });
+
+    socket.on("done-loading", () => {
+      setIsLoading(false);
+      console.log("Done loading");
     });
 
     socket.on("end", () => {
@@ -407,26 +425,44 @@ function Page() {
                         id="origin"
                         className="min-w-auto md:min-w-[500px] max-w-[500px] h-40 overflow-hidden"
                       >
-                        <motion.div
-                          layout
-                          id="static-text-container"
-                          initial={{ y: 0, opacity: 0 }}
-                          animate={{ y: scrollY.get(), opacity: 0.5 }}
-                          transition={{
-                            ease: "easeInOut",
-                            duration: 0.2,
-                            delay: 0.2,
-                          }}
-                          className="text-left prose text-2xl will-change-transform"
-                          dangerouslySetInnerHTML={{ __html: displayText }}
-                        />
+                        {isLoading && <Loading />}
+                        {!isLoading && (
+                          <motion.div
+                            layout
+                            id="static-text-container"
+                            initial={{ y: 0, opacity: 0 }}
+                            animate={{ y: scrollY.get(), opacity: 0.5 }}
+                            transition={{
+                              ease: "easeInOut",
+                              duration: 0.2,
+                              delay: 0.2,
+                            }}
+                            className="text-left prose text-2xl will-change-transform"
+                            dangerouslySetInnerHTML={{ __html: displayText }}
+                          />
+                        )}
                       </div>
                       <div className="flex items-center justify-between gap-4">
                         <label
                           htmlFor="text"
                           className="flex justify-center items-center slide cursor-pointer px-5 py-2 md:hover:scale-110 text-white rounded-full bg-gray-700/65 transition-all duration-200 ease-out"
                           onClick={() => {
-                            setStarted(true);
+                            if (isLoading) return;
+                            if (started) return;
+                            setIsLoading(true);
+                            socketRef.current?.emit("set-text", (data: any) => {
+                              if (data.error) {
+                                setIsLoading(false);
+                                socketRef.current?.emit("done-loading");
+                                return toast.error(data.error);
+                              }
+                              setText(data.text);
+                              setDisplayText(data.text);
+                              setStarted(true);
+                              setIsLoading(false);
+                              socketRef.current?.emit("done-loading");
+                              toast.success(data.success);
+                            });
                           }}
                         >
                           <div>Start</div>

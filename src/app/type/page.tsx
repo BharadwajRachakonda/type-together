@@ -235,38 +235,43 @@ const Page = () => {
                       htmlFor="text"
                       className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
                       onClick={async () => {
-                        setLoading(true);
-                        try {
-                          const res = await fetch(
-                            "http://localhost:8000/gemini",
-                            {
+                        if (count <= 0) {
+                          setLoading(true);
+                          try {
+                            const url = `${process.env.NEXT_PUBLIC_SOCKET_URL}gemini`;
+                            console.log("Fetching text from:", url);
+                            const res = await fetch(url, {
                               method: "GET",
                               headers: {
                                 "Content-Type": "application/json",
                               },
+                            });
+                            if (!res.ok) {
+                              toast.error(
+                                "Failed to fetch text. Please try again."
+                              );
+                              return;
                             }
-                          );
-                          if (!res.ok) {
+                            const data = await res.json();
+                            if (!data.text) {
+                              toast.error(
+                                "No text received. Please try again."
+                              );
+                              return;
+                            }
+                            setText(data.text);
+                            setDisplayText(data.text);
+                          } catch (err) {
                             toast.error(
-                              "Failed to fetch text. Please try again."
+                              "An error occurred while fetching text."
                             );
-                            return;
+                          } finally {
+                            setLoading(false);
                           }
-                          const data = await res.json();
-                          if (!data.text) {
-                            toast.error("No text received. Please try again.");
-                            return;
-                          }
-                          setText(data.text);
-                          setDisplayText(data.text);
-                          toast.success(
-                            count === 0 ? "Continue to Type" : "Reset and Type"
-                          );
-                        } catch (err) {
-                          toast.error("An error occurred while fetching text.");
-                        } finally {
-                          setLoading(false);
                         }
+                        toast.success(
+                          count === 0 ? "Continue to Type" : "Reset and Type"
+                        );
                       }}
                     >
                       <LayoutGroup>
