@@ -63,9 +63,9 @@ function Page() {
 
   useEffect(() => {
     const handler = () => {
-      const width = document.getElementById("text")?.offsetWidth;
+      const width = document.getElementById("origin")?.clientWidth;
       console.log("Width:", width);
-      const threshold = width !== undefined && width >= 200 ? 45 : 30;
+      const threshold = width !== undefined && width >= 400 ? 45 : 30;
       const prev = prevIndex.current;
       const delta = index - prev;
 
@@ -197,7 +197,7 @@ function Page() {
   };
 
   useEffect(() => {
-    const socket = io("https://type-together-backend.onrender.com", {
+    const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
       transports: ["websocket", "polling"],
       autoConnect: true,
     });
@@ -399,7 +399,10 @@ function Page() {
                       layoutRoot
                       className={`mb-10 <md:mb-0></md:mb-0> flex flex-col items-center p-9 h-60 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px] max-w-[600px]`}
                     >
-                      <div className="min-w-auto md:min-w-[500px] max-w-[500px] h-40 overflow-hidden">
+                      <div
+                        id="origin"
+                        className="min-w-auto md:min-w-[500px] max-w-[500px] h-40 overflow-hidden"
+                      >
                         <motion.div
                           layout
                           id="static-text-container"
@@ -417,7 +420,7 @@ function Page() {
                       <textarea
                         name="text"
                         id="text"
-                        className="opacity-0 h-0"
+                        className="opacity-0 h-0.5 w-0.5"
                         onFocus={() => {
                           setStarted(true);
                         }}
