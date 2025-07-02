@@ -263,7 +263,7 @@ function Page() {
         text.slice(0, index + 1) +
         "</span>" +
         text.slice(index + 1, otherIndex) +
-        "<span class='text-yellow-500/65 font-extrabold brightness-150 opacity-100 m-2'>" +
+        "<span class='text-yellow-500/65 font-extrabold brightness-150 opacity-100'>" +
         text[otherIndex] +
         "</span>" +
         text.slice(otherIndex + 1)
@@ -272,7 +272,7 @@ function Page() {
       return (
         "<span class='text-green-500/65'>" +
         text.slice(0, otherIndex) +
-        "<span class='text-yellow-500/65 font-extrabold brightness-150 opacity-100 m-2'>" +
+        "<span class='text-yellow-500/65 font-extrabold brightness-150 opacity-100'>" +
         text[otherIndex] +
         "</span>" +
         text.slice(otherIndex + 1, index + 1) +
@@ -293,17 +293,16 @@ function Page() {
 
   useEffect(() => {
     if (end) {
-      const totalChars = written.length;
       const correctChars = index;
       const totalWords = text.slice(0, index).split(" ").length;
 
       setSpeed(() => totalWords);
-      setAccuracy(Math.round((correctChars / totalChars) * 100 * 100) / 100);
+      setAccuracy(Math.round((correctChars / written.length) * 100));
 
       toast.success(
-        `Speed: ${totalWords} WPM, Accuracy: ${
-          Math.round((correctChars / totalChars) * 100 * 100) / 100
-        }%`
+        `Speed: ${totalWords} WPM, Accuracy: ${Math.round(
+          (correctChars / written.length) * 100
+        )}%`
       );
     }
   }, [end]);
@@ -539,36 +538,46 @@ function Page() {
               e.preventDefault();
             } else {
               if (e.key === text[index]) {
+                setWritten((prev) => {
+                  prev += e.key;
+                  return prev;
+                });
                 setIndex((prev) => prev + 1);
                 const nextText = getNext(text, index, otherIndex);
                 setDisplayText(() => nextText);
               } else {
-                const currText =
-                  "<span class='text-green-500/65'>" +
-                  text.slice(0, index) +
-                  "</span>" +
-                  text.slice(index);
-                const tempText =
-                  "<span class='text-green-500/65'>" +
-                  text.slice(0, index) +
-                  "</span>" +
-                  "<span class='text-red-500/65'>" +
-                  text[index] +
-                  "</span>" +
-                  text.slice(index + 1);
-                setTimeout(() => {
-                  setDisplayText(() => tempText);
-                }, 100);
-                setDisplayText(() => currText);
+                if (/^[\x20-\x7E]$/.test(e.key)) {
+                  setWritten((prev) => {
+                    prev += e.key;
+                    return prev;
+                  });
+                  const currText =
+                    "<span class='text-green-500/65'>" +
+                    text.slice(0, index) +
+                    "</span>" +
+                    text.slice(index);
+                  const tempText =
+                    "<span class='text-green-500/65'>" +
+                    text.slice(0, index) +
+                    "</span>" +
+                    "<span class='text-red-500/65'>" +
+                    text[index] +
+                    "</span>" +
+                    text.slice(index + 1);
+                  setTimeout(() => {
+                    setDisplayText(() => tempText);
+                  }, 100);
+                  setDisplayText(() => currText);
+                }
               }
             }
+          }}
+          onChange={(e) => {
+            return;
           }}
           spellCheck="false"
           autoFocus
           value={written}
-          onChange={(e) => {
-            setWritten(e.target.value);
-          }}
         ></textarea>
       )}
       {isSet && !isMedium && (
@@ -586,20 +595,15 @@ function Page() {
           onCopy={(e) => e.preventDefault()}
           onSelect={(e) => e.preventDefault()}
           onKeyDown={(e) => {
-            // Block typing before countdown ends
             if (startsIn > 0) {
               e.preventDefault();
             }
           }}
           onChange={(e) => {
             const input = e.target.value;
-
-            // Allow normal typing during game
             if (startsIn > 0) {
               return setWritten("");
             }
-
-            // Only validate newly typed char
             if (input.length > written.length) {
               const newChar = input[input.length - 1];
 
@@ -609,7 +613,6 @@ function Page() {
                 const nextText = getNext(text, newIndex - 1, otherIndex);
                 setDisplayText(nextText);
               } else {
-                // Temporary highlight wrong char
                 const currText =
                   "<span class='text-green-500/65'>" +
                   text.slice(0, index) +
@@ -629,8 +632,6 @@ function Page() {
                 }, 100);
               }
             }
-
-            // Always allow user to type freely
             setWritten(input);
           }}
         ></textarea>
