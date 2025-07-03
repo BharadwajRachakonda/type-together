@@ -275,15 +275,23 @@ const Page = () => {
                       }}
                     >
                       <LayoutGroup>
-                        <motion.div layout>
-                          {count !== 0 ? (
-                            <FontAwesomeIcon icon={faPause} />
-                          ) : (
-                            <FontAwesomeIcon icon={faPlay} />
-                          )}
-                        </motion.div>
+                        <motion.div layout>create</motion.div>
                       </LayoutGroup>
                     </label>
+                    <LayoutGroup>
+                      {!loading && (
+                        <motion.div
+                          layout
+                          onClick={() => {
+                            document.getElementById("text")?.focus();
+                            toast.success("Continue typing!");
+                          }}
+                          className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
+                        >
+                          <FontAwesomeIcon icon={faPlay} />
+                        </motion.div>
+                      )}
+                    </LayoutGroup>
                   </div>
                 </div>
               </motion.div>

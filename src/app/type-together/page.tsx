@@ -250,6 +250,16 @@ function Page() {
       setEnd(true);
     });
 
+    socket.on("text-update", (data) => {
+      console.log("Text updated:", data);
+      setText(data.text);
+      setDisplayText(data.text);
+      setStarted(true);
+      setIsLoading(false);
+      socketRef.current?.emit("done-loading");
+      toast.success(data.success);
+    });
+
     return () => {
       socket.disconnect();
     };
@@ -456,12 +466,6 @@ function Page() {
                                 socketRef.current?.emit("done-loading");
                                 return toast.error(data.error);
                               }
-                              setText(data.text);
-                              setDisplayText(data.text);
-                              setStarted(true);
-                              setIsLoading(false);
-                              socketRef.current?.emit("done-loading");
-                              toast.success(data.success);
                             });
                           }}
                         >
