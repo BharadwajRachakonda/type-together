@@ -9,11 +9,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faRotateLeft,
-  faPlay,
-  faPause,
-} from "@fortawesome/free-solid-svg-icons";
+import { faRotateLeft, faPlay } from "@fortawesome/free-solid-svg-icons";
 import Loading from "@/app/components/Loading";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -31,7 +27,6 @@ const Page = () => {
   const [written, setWritten] = useState("");
   const [text, setText] = useState("");
   const [displayText, setDisplayText] = useState("");
-  const [scrollOffset, setScrollOffset] = useState(0);
   const scrollY = useMotionValue(0);
   const startTimeRef = useRef<number | null>(null);
   const endTimeRef = useRef<number | null>(null);
@@ -124,31 +119,16 @@ const Page = () => {
     );
 
     const wordCount = written.trim().split(/\s+/).filter(Boolean).length;
+    setSpeed(() => wordCount);
+    const index = written.length - 1;
     const lastCount = lastScrollWordCount.current;
-    const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
-    const scrollWordThreshold = isMobile ? 5 : 10;
-    if (wordCount - lastCount >= scrollWordThreshold) {
-      const newOffset = scrollOffset - 36;
-      scrollY.set(newOffset);
-      setScrollOffset(newOffset);
-      lastScrollWordCount.current = wordCount;
-    }
-
-    if (startTimeRef.current) {
-      const endTime = endTimeRef.current ?? Date.now();
-      const durationMin = (endTime - startTimeRef.current) / 1000 / 60;
-      const wordCount = written.trim().split(/\s+/).filter(Boolean).length;
-
-      if (durationMin > 0) {
-        const currentWPM = Math.round(wordCount / durationMin);
-        const alpha = 0.3;
-
-        setSpeed((prevSpeed) =>
-          Math.round(alpha * currentWPM + (1 - alpha) * prevSpeed)
-        );
-      } else {
-        setSpeed(0);
-      }
+    const width = document.getElementById("origin")?.clientWidth;
+    const threshold = width !== undefined && width >= 400 ? 45 : 30;
+    const delta = index - lastCount;
+    if (delta >= threshold) {
+      const lineheight = 32.5;
+      scrollY.set(scrollY.get() - lineheight);
+      lastScrollWordCount.current = index;
     }
 
     setAccuracy(Math.round(((written.length - wrong) / written.length) * 100));
@@ -187,7 +167,10 @@ const Page = () => {
                   }}
                 >
                   <div className="flex flex-col items-center p-9 max-w-[600px] h-60 brightness-150 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px]">
-                    <div className="max-w-[500px] h-40 overflow-hidden">
+                    <div
+                      id="origin"
+                      className="max-w-[500px] h-40 overflow-hidden"
+                    >
                       {loading ? (
                         <motion.div layout key="loading">
                           <Loading />
@@ -223,7 +206,6 @@ const Page = () => {
                           timing.set(0);
                           started.current = false;
                           scrollY.set(0);
-                          setScrollOffset(0);
                           if (interval.current) {
                             clearInterval(interval.current);
                           }
