@@ -258,7 +258,9 @@ const Page = () => {
                         }}
                       >
                         <LayoutGroup>
-                          <motion.div layout>create</motion.div>
+                          {!loading && !started.current && (
+                            <motion.div layout>create</motion.div>
+                          )}
                         </LayoutGroup>
                       </label>
                       <LayoutGroup>
