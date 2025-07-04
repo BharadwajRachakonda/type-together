@@ -73,7 +73,7 @@ function Page() {
     const handler = () => {
       const width = document.getElementById("origin")?.clientWidth;
       console.log("Width:", width);
-      const threshold = width !== undefined && width >= 400 ? 45 : 26;
+      const threshold = width !== undefined && width >= 400 ? 45 : 24;
       const prev = prevIndex.current;
       const delta = index - prev;
 
