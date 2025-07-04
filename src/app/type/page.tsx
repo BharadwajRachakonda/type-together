@@ -156,185 +156,187 @@ const Page = () => {
   }, [written, text]);
 
   return (
-    <LayoutGroup>
-      <motion.div layout>
-        <Toaster position="top-left" />
-        <motion.div
-          layout
-          style={{ filter: "blur(10px)", scaleX, backgroundColor }}
-          transition={{ type: "spring", stiffness: 200 }}
-          className="w-full h-2 fixed top-0 left-0 z-50 origin-left"
-        ></motion.div>
-        <motion.div
-          layoutRoot
-          initial={{ y: 50, filter: "blur(10px)" }}
-          animate={{ y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 3, type: "spring", stiffness: 300 }}
-          className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center max-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
-        >
-          <h1 className="text-4xl font-bold">Type Test</h1>
+    <div className="relative top-28 md:top-auto">
+      <LayoutGroup>
+        <motion.div layout>
+          <Toaster position="top-left" />
+          <motion.div
+            layout
+            style={{ filter: "blur(10px)", scaleX, backgroundColor }}
+            transition={{ type: "spring", stiffness: 200 }}
+            className="w-full h-2 fixed top-0 left-0 z-50 origin-left"
+          ></motion.div>
+          <motion.div
+            layoutRoot
+            initial={{ y: 50, filter: "blur(10px)" }}
+            animate={{ y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 3, type: "spring", stiffness: 300 }}
+            className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center max-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
+          >
+            <h1 className="text-4xl font-bold">Type Test</h1>
 
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div>{timer} seconds remaining</div>
-            <AnimatePresence mode="wait">
-              <motion.div
-                layout
-                transition={{
-                  duration: 0.2,
-                  type: "spring",
-                  stiffness: 100,
-                }}
-              >
-                <div className="flex flex-col items-center p-9 max-w-[600px] h-60 brightness-150 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px]">
-                  <div className="max-w-[500px] h-40 overflow-hidden">
-                    {loading ? (
-                      <motion.div layout key="loading">
-                        <Loading />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="static-text"
-                        layout
-                        id="static-text-container"
-                        initial={{ y: 0 }}
-                        animate={{ y: scrollY.get() }}
-                        transition={{
-                          ease: "easeInOut",
-                          duration: 0.2,
-                          delay: 0.2,
-                        }}
-                        className="prose text-2xl will-change-transform"
-                        dangerouslySetInnerHTML={{ __html: displayText }}
-                      />
-                    )}
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
-                      onClick={() => {
-                        setWritten("");
-                        setDisplayText(() => text);
-                        setSpeed(0);
-                        setAccuracy(0);
-                        setEnd(false);
-                        setTimer(60);
-                        setCount(0);
-                        timing.set(0);
-                        started.current = false;
-                        scrollY.set(0);
-                        setScrollOffset(0);
-                        if (interval.current) {
-                          clearInterval(interval.current);
-                        }
-                        lastScrollWordCount.current = 0;
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faRotateLeft} />
-                    </div>
-                    <label
-                      htmlFor="text"
-                      className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
-                      onClick={async () => {
-                        if (count <= 0) {
-                          setLoading(true);
-                          try {
-                            const url = `${process.env.NEXT_PUBLIC_SOCKET_URL}gemini`;
-                            console.log("Fetching text from:", url);
-                            const res = await fetch(url, {
-                              method: "GET",
-                              headers: {
-                                "Content-Type": "application/json",
-                              },
-                            });
-                            if (!res.ok) {
-                              toast.error(
-                                "Failed to fetch text. Please try again."
-                              );
-                              return;
-                            }
-                            const data = await res.json();
-                            if (!data.text) {
-                              toast.error(
-                                "No text received. Please try again."
-                              );
-                              return;
-                            }
-                            setText(data.text);
-                            setDisplayText(data.text);
-                          } catch (err) {
-                            toast.error(
-                              "An error occurred while fetching text."
-                            );
-                          } finally {
-                            setLoading(false);
-                          }
-                        }
-                        toast.success(
-                          count === 0 ? "Continue to Type" : "Reset and Type"
-                        );
-                      }}
-                    >
-                      <LayoutGroup>
-                        <motion.div layout>create</motion.div>
-                      </LayoutGroup>
-                    </label>
-                    <LayoutGroup>
-                      {!loading && (
-                        <motion.div
-                          layout
-                          onClick={() => {
-                            document.getElementById("text")?.focus();
-                            toast.success("Continue typing!");
-                          }}
-                          className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
-                        >
-                          <FontAwesomeIcon icon={faPlay} />
+            <div className="flex flex-col items-center justify-center gap-4">
+              <div>{timer} seconds remaining</div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  layout
+                  transition={{
+                    duration: 0.2,
+                    type: "spring",
+                    stiffness: 100,
+                  }}
+                >
+                  <div className="flex flex-col items-center p-9 max-w-[600px] h-60 brightness-150 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px]">
+                    <div className="max-w-[500px] h-40 overflow-hidden">
+                      {loading ? (
+                        <motion.div layout key="loading">
+                          <Loading />
                         </motion.div>
+                      ) : (
+                        <motion.div
+                          key="static-text"
+                          layout
+                          id="static-text-container"
+                          initial={{ y: 0 }}
+                          animate={{ y: scrollY.get() }}
+                          transition={{
+                            ease: "easeInOut",
+                            duration: 0.2,
+                            delay: 0.2,
+                          }}
+                          className="prose text-2xl will-change-transform"
+                          dangerouslySetInnerHTML={{ __html: displayText }}
+                        />
                       )}
-                    </LayoutGroup>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
+                        onClick={() => {
+                          setWritten("");
+                          setDisplayText(() => text);
+                          setSpeed(0);
+                          setAccuracy(0);
+                          setEnd(false);
+                          setTimer(60);
+                          setCount(0);
+                          timing.set(0);
+                          started.current = false;
+                          scrollY.set(0);
+                          setScrollOffset(0);
+                          if (interval.current) {
+                            clearInterval(interval.current);
+                          }
+                          lastScrollWordCount.current = 0;
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faRotateLeft} />
+                      </div>
+                      <label
+                        htmlFor="text"
+                        className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
+                        onClick={async () => {
+                          if (count <= 0) {
+                            setLoading(true);
+                            try {
+                              const url = `${process.env.NEXT_PUBLIC_SOCKET_URL}gemini`;
+                              console.log("Fetching text from:", url);
+                              const res = await fetch(url, {
+                                method: "GET",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                              });
+                              if (!res.ok) {
+                                toast.error(
+                                  "Failed to fetch text. Please try again."
+                                );
+                                return;
+                              }
+                              const data = await res.json();
+                              if (!data.text) {
+                                toast.error(
+                                  "No text received. Please try again."
+                                );
+                                return;
+                              }
+                              setText(data.text);
+                              setDisplayText(data.text);
+                            } catch (err) {
+                              toast.error(
+                                "An error occurred while fetching text."
+                              );
+                            } finally {
+                              setLoading(false);
+                            }
+                          }
+                          toast.success(
+                            count === 0 ? "Continue to Type" : "Reset and Type"
+                          );
+                        }}
+                      >
+                        <LayoutGroup>
+                          <motion.div layout>create</motion.div>
+                        </LayoutGroup>
+                      </label>
+                      <LayoutGroup>
+                        {!loading && (
+                          <motion.div
+                            layout
+                            onClick={() => {
+                              document.getElementById("text")?.focus();
+                              toast.success("Continue typing!");
+                            }}
+                            className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
+                          >
+                            <FontAwesomeIcon icon={faPlay} />
+                          </motion.div>
+                        )}
+                      </LayoutGroup>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-            <textarea
-              id="text"
-              name="text"
-              className="opacity-0"
-              onChange={(e) => {
-                if (!end) {
-                  setWritten(e.target.value);
-                }
-                if (!started.current && e.target.value.length > 0) {
-                  started.current = true;
-                  startTimer();
-                }
-              }}
-              value={written}
-              disabled={end}
-              onPaste={(e) => {
-                e.preventDefault();
-                alert("Pasting is not allowed.");
-              }}
-            ></textarea>
+                </motion.div>
+              </AnimatePresence>
+              <textarea
+                id="text"
+                name="text"
+                className="opacity-0"
+                onChange={(e) => {
+                  if (!end) {
+                    setWritten(e.target.value);
+                  }
+                  if (!started.current && e.target.value.length > 0) {
+                    started.current = true;
+                    startTimer();
+                  }
+                }}
+                value={written}
+                disabled={end}
+                onPaste={(e) => {
+                  e.preventDefault();
+                  alert("Pasting is not allowed.");
+                }}
+              ></textarea>
 
-            <div className="flex items-center gap-8 my-4">
-              <div className=" text-lg font-medium">
-                <span className="px-4 py-2 bg-gray-600/65 rounded-xl shadow-[0_4px_16px_rgba(255,255,255,0.10)] font-bold text-blue-400/50">
-                  {speed}
-                </span>{" "}
-                WPM
-              </div>
-              <div className="text-lg font-medium">
-                <span className="px-4 py-2 bg-gray-600/65 rounded-xl shadow-[0_4px_16px_rgba(255,255,255,0.10)] font-bold text-blue-400/50">
-                  {accuracy}
-                </span>
-                %
+              <div className="flex items-center gap-8 my-4">
+                <div className=" text-lg font-medium">
+                  <span className="px-4 py-2 bg-gray-600/65 rounded-xl shadow-[0_4px_16px_rgba(255,255,255,0.10)] font-bold text-blue-400/50">
+                    {speed}
+                  </span>{" "}
+                  WPM
+                </div>
+                <div className="text-lg font-medium">
+                  <span className="px-4 py-2 bg-gray-600/65 rounded-xl shadow-[0_4px_16px_rgba(255,255,255,0.10)] font-bold text-blue-400/50">
+                    {accuracy}
+                  </span>
+                  %
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </LayoutGroup>
+      </LayoutGroup>
+    </div>
   );
 };
 

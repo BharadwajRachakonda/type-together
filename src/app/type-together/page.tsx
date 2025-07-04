@@ -379,10 +379,11 @@ function Page() {
                     }
                   }}
                 >
-                  <div className="flex items-center justify-center gap-4">
+                  <div className="flex items-center mt-7 md:mt-auto justify-center gap-4">
                     <div className="flex flex-col items-center justify-center gap-10">
-                      <h1 className="text-4xl font-bold">Type Together</h1>
-
+                      <h1 className="text-4xl font-bold min-h-20 md:min-h-auto">
+                        <p className="md:block hidden">Type Together</p>
+                      </h1>
                       <input
                         className="z-10 font-extrabold text-6xl border-gray-500/40 border-2 bg-gray-900/65 max-w-70 tracking-widest px-4 py-2 text-center rounded-3xl text-gray-500 focus:shadow-[0_35px_60px_-15px_rgba(255,255,255,0.3)] focus:outline-none focus:border-gray-900/65 transition-all duration-300 ease-in-out"
                         maxLength={4}
@@ -415,6 +416,20 @@ function Page() {
                     </motion.div>
                   </div>
                 </motion.form>
+                <AnimatePresence mode="wait">
+                  {!isMedium && end && (
+                    <div>
+                      {won && <p>You won! 🎉</p>}
+                      {!won && <p>You lost! 😢</p>}
+                      <span className="text-xl font-extrabold text-white">
+                        {speed} WPM
+                      </span>
+                      <span className="text-xl text-white ml-4">
+                        {accuracy}% Acc
+                      </span>
+                    </div>
+                  )}
+                </AnimatePresence>
                 {isSet && (
                   <>
                     <motion.div
@@ -452,6 +467,7 @@ function Page() {
                           />
                         )}
                       </div>
+
                       <div className="flex items-center justify-between gap-4">
                         <label
                           htmlFor="text"
@@ -500,7 +516,6 @@ function Page() {
             </LayoutGroup>
           </motion.div>
         </AnimatePresence>
-
         <motion.div layout>
           <AnimatePresence mode="wait">
             {started && startsIn > 0 && (
@@ -520,8 +535,6 @@ function Page() {
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
-        <AnimatePresence mode="wait">
           {isMedium && end && (
             <div>
               {won && <p>You won! 🎉</p>}
@@ -532,27 +545,7 @@ function Page() {
               <span className="text-xl text-white ml-4">{accuracy}% Acc</span>
             </div>
           )}
-          {!isMedium && end && (
-            <motion.div
-              layout
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{
-                ease: "easeInOut",
-                duration: 0.2,
-              }}
-              className="fixed left-0 top-0 right-0"
-            >
-              {won && <p className="text-white">You won! 🎉</p>}
-              {!won && <p className="text-white">You lost! 😢</p>}
-              <span className="text-xl font-extrabold text-white">
-                {speed} WPM
-              </span>
-              <span className="text-xl text-white ml-4">{accuracy}% Acc</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        </motion.div>
       </motion.div>
       {isSet && isMedium && (
         <textarea
