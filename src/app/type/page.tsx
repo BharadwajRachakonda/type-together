@@ -123,10 +123,10 @@ const Page = () => {
     const index = written.length - 1;
     const lastCount = lastScrollWordCount.current;
     const width = document.getElementById("origin")?.clientWidth;
-    const threshold = width !== undefined && width >= 400 ? 45 : 18;
+    const threshold = width !== undefined && width >= 400 ? 45 : 23;
     const delta = index - lastCount;
     if (delta >= threshold) {
-      const lineheight = 32.5;
+      const lineheight = 31.5;
       scrollY.set(scrollY.get() - lineheight);
       lastScrollWordCount.current = index;
     }
