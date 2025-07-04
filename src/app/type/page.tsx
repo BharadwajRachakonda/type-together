@@ -123,7 +123,7 @@ const Page = () => {
     const index = written.length - 1;
     const lastCount = lastScrollWordCount.current;
     const width = document.getElementById("origin")?.clientWidth;
-    const threshold = width !== undefined && width >= 400 ? 45 : 30;
+    const threshold = width !== undefined && width >= 400 ? 45 : 20;
     const delta = index - lastCount;
     if (delta >= threshold) {
       const lineheight = 32.5;
