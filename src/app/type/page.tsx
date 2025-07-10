@@ -13,6 +13,10 @@ import { faRotateLeft, faPlay } from "@fortawesome/free-solid-svg-icons";
 import Loading from "@/app/components/Loading";
 import toast, { Toaster } from "react-hot-toast";
 
+export const metadata = {
+  title: "Test",
+};
+
 const Page = () => {
   const [count, setCount] = useState(0);
   const timing = useMotionValue(count);

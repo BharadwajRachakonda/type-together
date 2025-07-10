@@ -15,6 +15,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import Loading from "@/app/components/Loading";
 
+export const metadata = {
+  title: "Compete",
+};
+
 function Page() {
   const timing = useMotionValue(0);
   const x = useTransform(timing, [0, 60], ["0%", "100%"]);

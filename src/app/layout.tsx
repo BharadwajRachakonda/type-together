@@ -5,8 +5,9 @@ import "./globals.css";
 import NavBar from "./components/NavBar";
 
 export const metadata: Metadata = {
-  title: "Type Together",
-  description: "Created by Bharadwaj Rachakonda",
+  title: { template: "%s | Type Together", default: "Home" },
+  description:
+    "Type Together - multiuser typing experience created by Bharadwaj Rachakonda",
 };
 
 export default function RootLayout({
