@@ -5,7 +5,7 @@ import "./globals.css";
 import NavBar from "./components/NavBar";
 
 export const metadata: Metadata = {
-  title: { template: "%s | Type Together", default: "Home" },
+  title: { template: "%s | Type Together", default: "Type Together" },
   description:
     "Type Together - multiuser typing experience created by Bharadwaj Rachakonda",
 };
