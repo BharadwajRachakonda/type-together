@@ -14,6 +14,63 @@ import Loading from "@/app/components/Loading";
 import toast, { Toaster } from "react-hot-toast";
 
 const Page = () => {
+  const letterWidths: Record<string, number> = {
+    a: 13,
+    b: 14,
+    c: 13,
+    d: 14,
+    e: 13,
+    f: 8,
+    g: 14,
+    h: 14,
+    i: 6,
+    j: 6,
+    k: 13,
+    l: 6,
+    m: 21,
+    n: 14,
+    o: 14,
+    p: 14,
+    q: 14,
+    r: 8,
+    s: 12,
+    t: 9,
+    u: 13,
+    v: 13,
+    w: 19,
+    x: 13,
+    y: 12,
+    z: 13,
+    A: 16,
+    B: 16,
+    C: 17,
+    D: 16,
+    E: 14,
+    F: 14,
+    G: 17,
+    H: 17,
+    I: 6,
+    J: 14,
+    K: 15,
+    L: 13,
+    M: 21,
+    N: 18,
+    O: 17,
+    P: 15,
+    Q: 17,
+    R: 16,
+    S: 14,
+    T: 13,
+    U: 17,
+    V: 16,
+    W: 22,
+    X: 15,
+    Y: 14,
+    Z: 13,
+    ".": 5,
+    " ": 6,
+    others: 5,
+  };
   const [count, setCount] = useState(0);
   const timing = useMotionValue(count);
   const x = useTransform(timing, [0, 60], ["0%", "100%"]);
@@ -64,7 +121,7 @@ const Page = () => {
 
   useEffect(() => {
     const initialText =
-      "The quick brown fox jumps over the lazy dog” is a well-known pangram, but typing isn't just about hitting every letter. Accuracy, consistency, and rhythm are just as important. As you type this sentence, focus on reducing errors while maintaining a steady pace. Don’t rush — speed comes with practice. A great typist aims not only for speed, but also for precision and clarity. Keep your hands in the correct position, use all your fingers, and glance at the screen, not the keyboard. With enough dedication and daily effort, you’ll notice your typing speed gradually improve without sacrificing accuracy.";
+      "The quick brown fox jumps over the lazy dog is a well known pangram but typing isnt just about hitting every letter. Accuracy, consistency, and rhythm are just as important. As you type this sentence focus on reducing errors while maintaining a steady pace. Dont rush speed comes with practice. A great typist aims not only for speed but also for precision and clarity. Keep your hands in the correct position use all your fingers and glance at the screen not the keyboard. With enough dedication and daily effort youll notice your typing speed gradually improve without sacrificing accuracy.";
     setText(initialText);
     setDisplayText(initialText);
   }, []);
@@ -118,21 +175,53 @@ const Page = () => {
       currText.length
     );
 
+    setDisplayText(nextText);
     const wordCount = written.trim().split(/\s+/).filter(Boolean).length;
     setSpeed(() => wordCount);
+    // const threshold = width !== undefined && width >= 400 ? 45 : 20;
+    // const delta = index - lastCount;
     const index = written.length - 1;
     const lastCount = lastScrollWordCount.current;
-    const width = document.getElementById("origin")?.clientWidth;
-    const threshold = width !== undefined && width >= 400 ? 45 : 20;
-    const delta = index - lastCount;
-    if (delta >= threshold) {
-      const lineheight = 31.5;
-      scrollY.set(scrollY.get() - lineheight);
+    const containerWidth = document.getElementById("origin")?.clientWidth;
+
+    if (containerWidth === undefined) return;
+    if (written.length >= text.length - 30) {
+      return;
+    }
+    if (text[index] !== " ") return;
+    const remaining = text.slice(index + 1, text.length);
+    const words = remaining.trim().split(/\s+/);
+    const nextWord = words[0] || "";
+    const currWords = text
+      .slice(lastCount, index + 1)
+      .trim()
+      .split(/\s+/);
+    let nextWordWidth = letterWidths[" "] ?? 6;
+    for (const char of nextWord) {
+      nextWordWidth += letterWidths[char] ?? letterWidths.others;
+    }
+    // let currentWord = words[0];
+    let currentWordWidth = 0;
+
+    for (const wrd of currWords) {
+      for (const char of wrd) {
+        currentWordWidth += letterWidths[char] ?? letterWidths.others;
+      }
+      currentWordWidth += letterWidths[" "] ?? 6;
+    }
+    if (currentWordWidth + nextWordWidth > containerWidth + 6) {
+      const lineHeight = 32;
+      scrollY.set(scrollY.get() - lineHeight);
       lastScrollWordCount.current = index;
     }
 
+    // if (delta >= threshold) {
+    //   const lineheight = 31.5;
+    //   scrollY.set(scrollY.get() - lineheight);
+    //   lastScrollWordCount.current = index;
+    // }
+
     setAccuracy(Math.round(((written.length - wrong) / written.length) * 100));
-    setDisplayText(nextText);
   }, [written, text]);
 
   return (
@@ -187,7 +276,7 @@ const Page = () => {
                             duration: 0.2,
                             delay: 0.2,
                           }}
-                          className="prose text-2xl will-change-transform"
+                          className="prose text-2xl will-change-transform leading-8"
                           dangerouslySetInnerHTML={{ __html: displayText }}
                         />
                       )}
