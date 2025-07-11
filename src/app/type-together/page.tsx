@@ -348,7 +348,7 @@ function Page() {
         layoutRoot
         initial={{ filter: "blur(10px)", y: 50 }}
         animate={{ filter: "blur(0px)", y: 0 }}
-        transition={{ duration: 0.3, type: "spring", stiffness: 200 }}
+        transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
         className="flex flex-col h-screen items-center justify-center text-center gap-10"
       >
         <AnimatePresence mode="wait">

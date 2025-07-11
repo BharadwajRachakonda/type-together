@@ -239,7 +239,7 @@ const Page = () => {
             layoutRoot
             initial={{ y: 50, filter: "blur(10px)" }}
             animate={{ y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 3, type: "spring", stiffness: 300 }}
+            transition={{ duration: 3, type: "spring", stiffness: 100 }}
             className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center max-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
           >
             <h1 className="text-4xl font-bold">Type Test</h1>
