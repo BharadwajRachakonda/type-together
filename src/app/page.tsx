@@ -8,6 +8,8 @@ export default function Home() {
   const arr = [
     " by Me",
     " by Bharadwaj Rachakonda",
+    " with 💘💝",
+    " with Gemini AI",
     " with Framer Motion",
     " with Next.js",
     " with TypeScript",
