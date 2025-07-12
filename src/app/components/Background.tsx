@@ -1,5 +1,4 @@
 import React from "react";
-import red from "./images/red.webp";
 
 function Background() {
   return (
