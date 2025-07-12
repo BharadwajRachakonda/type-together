@@ -233,21 +233,21 @@ function Page() {
     });
 
     socket.on("loading", () => {
-      setIsLoading(true);
+      setIsLoading(() => true);
       console.log("Loading...");
     });
 
     socket.on("start", () => {
-      setStarted(true);
+      setStarted(() => true);
     });
 
     socket.on("done-loading", () => {
-      setIsLoading(false);
+      setIsLoading(() => false);
       console.log("Done loading");
     });
 
     socket.on("end", () => {
-      setEnd(true);
+      setEnd(() => true);
     });
 
     socket.on("text-update", (data) => {
@@ -291,7 +291,7 @@ function Page() {
         text.slice(0, index + 1) +
         "</span>" +
         text.slice(index + 1, otherIndex) +
-        "<span class='text-yellow-500/65 font-extrabold brightness-150 opacity-100'>" +
+        "<span class='text-gray-700 bg-gray-100/65 rounded-sm brightness-150 opacity-100'>" +
         text[otherIndex] +
         "</span>" +
         text.slice(otherIndex + 1)
@@ -300,7 +300,7 @@ function Page() {
       return (
         "<span class='text-green-500/65'>" +
         text.slice(0, otherIndex) +
-        "<span class='text-yellow-500/65 font-extrabold brightness-150 opacity-100'>" +
+        "<span class='text-gray-700 bg-gray-100/65 rounded-sm brightness-150 opacity-100'>" +
         text[otherIndex] +
         "</span>" +
         text.slice(otherIndex + 1, index + 1) +
@@ -593,7 +593,7 @@ function Page() {
                     "<span class='text-green-500/65'>" +
                     text.slice(0, index) +
                     "</span>" +
-                    "<span class='text-red-500/65'>" +
+                    "<span class='text-gray-700 bg-red-500/65 rounded-sm'>" +
                     text[index] +
                     "</span>" +
                     text.slice(index + 1);
@@ -655,7 +655,7 @@ function Page() {
                   "<span class='text-green-500/65'>" +
                   text.slice(0, index) +
                   "</span>" +
-                  "<span class='text-red-500/65'>" +
+                  "<span class='text-gray-700 bg-red-500/65 rounded-sm'>" +
                   text[index] +
                   "</span>" +
                   text.slice(index + 1);
