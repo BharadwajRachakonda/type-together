@@ -3,6 +3,7 @@ import Link from "next/link";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useState, useEffect } from "react";
 import Footer from "./components/Footer";
+import Background from "./components/Background";
 
 export default function Home() {
   const arr = [
@@ -31,6 +32,7 @@ export default function Home() {
 
   return (
     <LayoutGroup>
+      <Background />
       <motion.div
         initial={{ filter: "blur(10px)" }}
         whileInView={{ filter: "blur(0px)" }}
@@ -39,10 +41,10 @@ export default function Home() {
       >
         <div>
           <motion.div className="flex flex-col items-center justify-center gap-10 p-4 py-8">
-            <div className="flex flex-col items-center h-lvh justify-center gap-2">
+            <div className="flex flex-col items-center h-lvh justify-center gap-2 overflow-hidden">
               <motion.h1
                 initial={{ borderTop: "50px solid transparent" }}
-                animate={{ borderTop: "0px solid transparent" }}
+                animate={{ borderTop: "-50px solid transparent" }}
                 transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
                 className="text-4xl font-extralight text-sky-200/90 italic text-shadow-lg"
               >
@@ -103,7 +105,7 @@ export default function Home() {
                 </span>
                 , and{" "}
                 <span className="font-semibold text-sky-200/90">Socket.io</span>{" "}
-                — and soon powered by{" "}
+                — and powered by{" "}
                 <span className="italic text-sky-200">Gemini AI</span> to serve
                 fresh, unique text every time you visit.
               </p>
