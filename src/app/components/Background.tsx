@@ -4,7 +4,12 @@ import red from "./images/red.webp";
 function Background() {
   return (
     <div className="absolute w-screen h-screen overflow-hidden md:overflow-visible">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 790 775" fill="none">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 790 775"
+        fill="none"
+        className="absolute -right-50 -bottom-50  w-lvh h-lvh md:w-auto md:h-auto"
+      >
         <g filter="url(#filter0_dfg_1_8)">
           <ellipse
             cx="395.016"

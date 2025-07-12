@@ -67,7 +67,7 @@ export default function Home() {
                 </AnimatePresence>
               </span>
             </div>
-            <hr className="border-sky-200/20 border-dashed border-[1px] w-screen" />
+            <hr className="hidden md:block border-sky-200/20 border-dashed border-[1px] w-screen" />
             <motion.div
               initial={{ opacity: 0, borderTop: "20px solid transparent" }}
               whileInView={{ opacity: 1, borderTop: "0px solid transparent" }}
