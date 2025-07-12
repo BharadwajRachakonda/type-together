@@ -39,6 +39,9 @@ function Page() {
   const [isMedium, setIsMedium] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const startIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const mainTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     setText(
       "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog is a well-known pangram, but typing isn't just about hitting every letter. Accuracy, consistency, and rhythm are just as important. As you type this sentence, focus on reducing errors while maintaining a steady pace. Don’t rush — speed comes with practice. A great typist aims not only for speed, but also for precision and clarity. Keep your hands in the correct position, use all your fingers, and glance at the screen, not the keyboard. With enough dedication and daily effort, you’ll notice your typing speed gradually improve without sacrificing accuracy."
@@ -46,6 +49,14 @@ function Page() {
     setDisplayText(
       "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog is a well-known pangram, but typing isn't just about hitting every letter. Accuracy, consistency, and rhythm are just as important. As you type this sentence, focus on reducing errors while maintaining a steady pace. Don’t rush — speed comes with practice. A great typist aims not only for speed, but also for precision and clarity. Keep your hands in the correct position, use all your fingers, and glance at the screen, not the keyboard. With enough dedication and daily effort, you’ll notice your typing speed gradually improve without sacrificing accuracy."
     );
+    return () => {
+      if (startIntervalRef.current) {
+        clearInterval(startIntervalRef.current);
+      }
+      if (mainTimerRef.current) {
+        clearInterval(mainTimerRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -88,21 +99,47 @@ function Page() {
   }, [index, isMedium, scrollY]);
 
   useEffect(() => {
+    if (isLoading) {
+      if (startIntervalRef.current) {
+        clearInterval(startIntervalRef.current);
+        startIntervalRef.current = null;
+      }
+      if (mainTimerRef.current) {
+        clearInterval(mainTimerRef.current);
+        mainTimerRef.current = null;
+      }
+      setStarted(false);
+      setEnd(false);
+      setTime(60);
+      timing.set(0);
+      scrollY.set(0);
+      setStartsIn(3);
+      console.log("🧹 Cleared intervals due to loading");
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
     if (started) {
+      if (isLoading) {
+        console.log("🚫 Not starting intervals because loading is true");
+        return;
+      }
       setWritten("");
       setIndex(0);
       setDisplayText(text);
       setWon(null);
       setEnd(false);
       scrollY.set(0);
+      timing.set(0);
+      setTime(60);
       prevIndex.current = 0;
       let count = 60;
       let startIn = 3;
       socketRef.current?.emit("start");
       if (startIn > 0) {
-        const interval = setInterval(() => {
+        startIntervalRef.current = setInterval(() => {
           if (startIn <= 0) {
-            const i = setInterval(() => {
+            mainTimerRef.current = setInterval(() => {
               if (count === 60) {
                 document.getElementById("text")?.focus();
               }
@@ -110,13 +147,13 @@ function Page() {
                 const element = document.getElementById("text");
                 element?.blur();
                 setEnd(true);
-                clearInterval(i);
+                mainTimerRef.current && clearInterval(mainTimerRef.current);
               }
               setTime(() => count);
               timing.set(timing.get() + 1);
               count--;
             }, 1000);
-            clearInterval(interval);
+            startIntervalRef.current && clearInterval(startIntervalRef.current);
           }
           startIn--;
           setStartsIn(() => startIn);
@@ -233,6 +270,9 @@ function Page() {
     });
 
     socket.on("loading", () => {
+      setStarted(() => false);
+      setEnd(() => false);
+      setWritten(() => "");
       setIsLoading(() => true);
       console.log("Loading...");
     });
