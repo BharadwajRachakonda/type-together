@@ -330,7 +330,7 @@ function Page() {
 
   useEffect(() => {
     const url = process.env.NEXT_PUBLIC_SOCKET_URL;
-    console.log("Connecting to socket at:", url);
+    // console.log("Connecting to socket at:", url);
     const socket = io(url, {
       transports: ["websocket", "polling"],
       autoConnect: true,
@@ -341,11 +341,11 @@ function Page() {
     socket.connect();
 
     socket.on("connect", () => {
-      console.log("✅ Connected:", socket.id);
+      // console.log("✅ Connected:", socket.id);
     });
 
     socket.on("receive-message", (msg) => {
-      console.log("📩 Received:", msg);
+      // console.log("📩 Received:", msg);
       setMessage(msg);
     });
 
@@ -375,7 +375,7 @@ function Page() {
     });
 
     socket.on("text-update", (data) => {
-      console.log("Text updated:", data);
+      // console.log("Text updated:", data);
       setText(data.text);
       setDisplayText(data.text);
       setStarted(true);

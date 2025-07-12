@@ -310,7 +310,7 @@ const Page = () => {
                               setLoading(true);
                               try {
                                 const url = `${process.env.NEXT_PUBLIC_SOCKET_URL}gemini`;
-                                console.log("Fetching text from:", url);
+                                // console.log("Fetching text from:", url);
                                 const res = await fetch(url, {
                                   method: "GET",
                                   headers: {
