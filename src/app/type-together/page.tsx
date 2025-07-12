@@ -16,6 +16,63 @@ import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import Loading from "@/app/components/Loading";
 
 function Page() {
+  const letterWidths: Record<string, number> = {
+    a: 13,
+    b: 14,
+    c: 13,
+    d: 14,
+    e: 13,
+    f: 8,
+    g: 14,
+    h: 14,
+    i: 6,
+    j: 6,
+    k: 13,
+    l: 6,
+    m: 21,
+    n: 14,
+    o: 14,
+    p: 14,
+    q: 14,
+    r: 8,
+    s: 12,
+    t: 9,
+    u: 13,
+    v: 13,
+    w: 19,
+    x: 13,
+    y: 12,
+    z: 13,
+    A: 16,
+    B: 16,
+    C: 17,
+    D: 16,
+    E: 14,
+    F: 14,
+    G: 17,
+    H: 17,
+    I: 6,
+    J: 14,
+    K: 15,
+    L: 13,
+    M: 21,
+    N: 18,
+    O: 17,
+    P: 15,
+    Q: 17,
+    R: 16,
+    S: 14,
+    T: 13,
+    U: 17,
+    V: 16,
+    W: 22,
+    X: 15,
+    Y: 14,
+    Z: 13,
+    ".": 5,
+    " ": 6,
+    others: 5,
+  };
   const timing = useMotionValue(0);
   const x = useTransform(timing, [0, 60], ["0%", "100%"]);
   const prevIndex = useRef(0);
@@ -28,7 +85,7 @@ function Page() {
   const [displayText, setDisplayText] = useState("");
   const [text, setText] = useState("");
   const [written, setWritten] = useState("");
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(-1);
   const scrollY = useMotionValue(0);
   const [otherIndex, setOtherIndex] = useState(0);
   const [started, setStarted] = useState(false);
@@ -82,21 +139,47 @@ function Page() {
 
   useEffect(() => {
     const handler = () => {
-      const width = document.getElementById("origin")?.clientWidth;
-      console.log("Width:", width);
-      const threshold = width !== undefined && width >= 400 ? 45 : 26;
-      const prev = prevIndex.current;
-      const delta = index - prev;
+      const containerWidth = document.getElementById("origin")?.clientWidth;
+      console.log("Width:", containerWidth);
+      const lastCount = prevIndex.current;
+      if (containerWidth === undefined) return;
+      if (text.length - index <= 30) return;
+      if (text[index] != " ") return;
+      const remaining = text.slice(index + 1);
+      const words = remaining.trim().split(/\s+/);
+      const nextWord = words[0] || "";
+      const currWords = text
+        .slice(lastCount, index + 1)
+        .trim()
+        .split(/\s+/);
+      let nextWordWidth = letterWidths[" "] ?? 6;
+      for (const char of nextWord) {
+        nextWordWidth += letterWidths[char] ?? letterWidths.others;
+      }
 
-      if (Math.abs(delta) >= threshold) {
-        const lineHeight = 32.5;
+      let currentWordWidth = 0;
+      for (const wrd of currWords) {
+        for (const char of wrd) {
+          currentWordWidth += letterWidths[char] ?? letterWidths.others;
+        }
+        currentWordWidth += letterWidths[" "] ?? 6;
+      }
+
+      // console.log(currentWordWidth + nextWordWidth);
+
+      if (currentWordWidth + nextWordWidth > containerWidth + 6) {
+        const lineHeight = 32;
         scrollY.set(scrollY.get() - lineHeight);
+        // console.log(
+        //   "Scrolling down by line height:",
+        //   lineHeight,
+        //   scrollY.get()
+        // );
         prevIndex.current = index;
       }
     };
-
     handler();
-  }, [index, isMedium, scrollY]);
+  }, [index]);
 
   useEffect(() => {
     if (isLoading) {
@@ -110,6 +193,7 @@ function Page() {
       }
       setStarted(false);
       setEnd(false);
+      setWon(null);
       setTime(60);
       timing.set(0);
       scrollY.set(0);
@@ -325,35 +409,36 @@ function Page() {
   };
 
   const getNext = (text: string, index: number, otherIndex: number): string => {
-    if (otherIndex > index) {
+    const greenClass = "text-green-500/65";
+    const blueClass =
+      "<span class='border-l-2 border-l-sky-500/65 animate-ping'></span><span class='text-sky-300/65'>";
+    const grayClass =
+      "text-gray-700 bg-gray-100/65 rounded-sm brightness-150 opacity-100";
+
+    const useGray = otherIndex !== index;
+    if (index === 0 && written === "") {
+      return `${blueClass}${text[0]}</span>` + text.slice(1);
+    } else if (index === 0) {
       return (
-        "<span class='text-green-500/65'>" +
-        text.slice(0, index + 1) +
-        "</span>" +
-        text.slice(index + 1, otherIndex) +
-        "<span class='text-gray-700 bg-gray-100/65 rounded-sm brightness-150 opacity-100'>" +
-        text[otherIndex] +
-        "</span>" +
-        text.slice(otherIndex + 1)
-      );
-    } else if (otherIndex < index) {
-      return (
-        "<span class='text-green-500/65'>" +
-        text.slice(0, otherIndex) +
-        "<span class='text-gray-700 bg-gray-100/65 rounded-sm brightness-150 opacity-100'>" +
-        text[otherIndex] +
-        "</span>" +
-        text.slice(otherIndex + 1, index + 1) +
-        "</span>" +
-        text.slice(index + 1)
+        `<span class='${greenClass}'>${text[0]}</span>` +
+        `${blueClass}${text[1]}</span>` +
+        text.slice(2)
       );
     }
-    return (
-      "<span class='text-green-500/65'>" +
-      text.slice(0, index + 1) +
-      "</span>" +
-      text.slice(index + 1)
-    );
+
+    return text
+      .split("")
+      .map((ch, i) => {
+        if (useGray && i === otherIndex && i !== index + 1) {
+          return `<span class='${grayClass}'>${ch}</span>`;
+        } else if (i <= index) {
+          return `<span class='${greenClass}'>${ch}</span>`;
+        } else if (i === index + 1) {
+          return `${blueClass}${ch}</span>`;
+        }
+        return ch;
+      })
+      .join("");
   };
 
   const [speed, setSpeed] = useState(0);
@@ -502,8 +587,10 @@ function Page() {
                               duration: 0.2,
                               delay: 0.2,
                             }}
-                            className="text-left prose text-2xl will-change-transform"
-                            dangerouslySetInnerHTML={{ __html: displayText }}
+                            className="text-left prose text-2xl will-change-transform leading-8"
+                            dangerouslySetInnerHTML={{
+                              __html: displayText,
+                            }}
                           />
                         )}
                       </div>
@@ -515,6 +602,7 @@ function Page() {
                           onClick={() => {
                             if (isLoading) return;
                             if (started) return;
+                            document.getElementById("text")?.focus();
                             setIsLoading(true);
                             socketRef.current?.emit("set-text", (data: any) => {
                               if (data.error) {
@@ -633,7 +721,7 @@ function Page() {
                     "<span class='text-green-500/65'>" +
                     text.slice(0, index) +
                     "</span>" +
-                    "<span class='text-gray-700 bg-red-500/65 rounded-sm'>" +
+                    "<span class='text-gray-700 border-l-2 border-l-red-500/65 bg-red-500/65 animate-pulse rounded-sm'>" +
                     text[index] +
                     "</span>" +
                     text.slice(index + 1);
@@ -695,7 +783,7 @@ function Page() {
                   "<span class='text-green-500/65'>" +
                   text.slice(0, index) +
                   "</span>" +
-                  "<span class='text-gray-700 bg-red-500/65 rounded-sm'>" +
+                  "<span class='text-gray-700 border-l-2 border-l-red-500/65 bg-red-500/65 animate-pulse rounded-sm'>" +
                   text[index] +
                   "</span>" +
                   text.slice(index + 1);

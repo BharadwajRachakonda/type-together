@@ -178,8 +178,6 @@ const Page = () => {
     setDisplayText(nextText);
     const wordCount = written.trim().split(/\s+/).filter(Boolean).length;
     setSpeed(() => wordCount);
-    // const threshold = width !== undefined && width >= 400 ? 45 : 20;
-    // const delta = index - lastCount;
     const index = written.length - 1;
     const lastCount = lastScrollWordCount.current;
     const containerWidth = document.getElementById("origin")?.clientWidth;
