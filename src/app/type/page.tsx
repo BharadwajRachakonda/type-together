@@ -389,6 +389,18 @@ const Page = () => {
                   e.preventDefault();
                   alert("Pasting is not allowed.");
                 }}
+                onCopy={(e) => {
+                  e.preventDefault();
+                  alert("Copying is not allowed.");
+                }}
+                onCut={(e) => {
+                  e.preventDefault();
+                  alert("Cutting is not allowed.");
+                }}
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
+                autoFocus
               ></textarea>
 
               <div className="flex items-center gap-8 my-4">

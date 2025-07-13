@@ -687,6 +687,7 @@ function Page() {
           className="absolute top-0 opacity-0 -z-50"
           autoComplete="off"
           autoCorrect="off"
+          spellCheck="false"
           onPaste={(e) => {
             e.preventDefault();
           }}
@@ -736,7 +737,6 @@ function Page() {
           onChange={(e) => {
             return;
           }}
-          spellCheck="false"
           autoFocus
           value={written}
         ></textarea>
