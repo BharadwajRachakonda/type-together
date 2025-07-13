@@ -4,6 +4,8 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useState, useEffect } from "react";
 import Footer from "./components/Footer";
 import Background from "./components/Background";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAnglesDown } from "@fortawesome/free-solid-svg-icons";
 
 export default function Home() {
   const arr = [
@@ -67,6 +69,17 @@ export default function Home() {
                     </motion.span>
                   </AnimatePresence>
                 </span>
+                <div>
+                  <div className="flex flex-col items-center">
+                    <div className="w-6 h-10 border-2 border-gray-100 rounded-full flex justify-center">
+                      <div className="w-1 h-3 bg-gray-100 rounded-full mt-5 animate-bounce"></div>
+                    </div>
+                  </div>
+                  {/* <FontAwesomeIcon
+                    icon={faAnglesDown}
+                    className="animate-bounce text-2xl "
+                  /> */}
+                </div>
               </div>
               <hr className="border-sky-200/20 border-dashed border-[1px] w-screen" />
             </div>
