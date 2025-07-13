@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: { template: "%s | Type Together", default: "Type Together" },
   description:
     "Type Together - multiuser typing experience created by Bharadwaj Rachakonda",
+  other: {
+    "google-site-verification": "csEFsp6IwCZMdxKi3lWbDe9BE-PPXDR5QBjNueFzdQc",
+  },
 };
 
 export default function RootLayout({
