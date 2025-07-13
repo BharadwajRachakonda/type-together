@@ -14,6 +14,7 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-regular-svg-icons";
 import Loading from "@/app/components/Loading";
+import { s } from "motion/react-client";
 
 function Page() {
   const letterWidths: Record<string, number> = {
@@ -416,7 +417,7 @@ function Page() {
       "text-gray-700 bg-gray-100/65 rounded-sm brightness-150 opacity-100";
 
     const useGray = otherIndex !== index;
-    if (index === 0 && written === "") {
+    if ((index === 0 && written === "") || index < 0) {
       return `${blueClass}${text[0]}</span>` + text.slice(1);
     } else if (index === 0) {
       return (
@@ -440,6 +441,10 @@ function Page() {
       })
       .join("");
   };
+
+  useEffect(() => {
+    setDisplayText(() => getNext(text, index - 1, otherIndex));
+  }, [text, index, otherIndex]);
 
   const [speed, setSpeed] = useState(0);
   const [accuracy, setAccuracy] = useState(0);
@@ -704,8 +709,6 @@ function Page() {
                   return prev;
                 });
                 setIndex((prev) => prev + 1);
-                const nextText = getNext(text, index, otherIndex);
-                setDisplayText(() => nextText);
               } else {
                 if (/^[\x20-\x7E]$/.test(e.key)) {
                   setWritten((prev) => {
@@ -725,10 +728,7 @@ function Page() {
                     text[index] +
                     "</span>" +
                     text.slice(index + 1);
-                  setTimeout(() => {
-                    setDisplayText(() => tempText);
-                  }, 100);
-                  setDisplayText(() => currText);
+                  setDisplayText(() => tempText);
                 }
               }
             }
@@ -771,8 +771,6 @@ function Page() {
               if (newChar === text[index]) {
                 const newIndex = index + 1;
                 setIndex(newIndex);
-                const nextText = getNext(text, newIndex - 1, otherIndex);
-                setDisplayText(nextText);
               } else {
                 const currText =
                   "<span class='text-green-500/65'>" +
