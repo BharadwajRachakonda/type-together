@@ -41,33 +41,35 @@ export default function Home() {
       >
         <div>
           <motion.div className="flex flex-col items-center justify-center gap-10 p-4 py-8">
-            <div className="flex flex-col items-center h-lvh justify-center gap-2 overflow-hidden">
-              <motion.h1
-                initial={{ borderTop: "50px solid transparent" }}
-                animate={{ borderTop: "-50px solid transparent" }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-                className="text-4xl font-extralight text-sky-200/90 italic text-shadow-lg"
-              >
-                Type & Compete
-              </motion.h1>
-              <span className="text-2xl">Built </span>{" "}
-              <span>
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    layout
-                    key={arr[i]}
-                    className="md:text-4xl text-2xl font-extrabold text-sky-200/90 inline-block italic"
-                    initial={{ x: 0, y: 5, opacity: 0 }}
-                    animate={{ x: 0, y: 0, opacity: 1 }}
-                    exit={{ x: 0, y: -5, opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    {arr[i]}
-                  </motion.span>
-                </AnimatePresence>
-              </span>
+            <div>
+              <div className="flex flex-col items-center h-lvh justify-center gap-2 overflow-hidden">
+                <motion.h1
+                  initial={{ borderTop: "50px solid transparent" }}
+                  animate={{ borderTop: "-50px solid transparent" }}
+                  transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
+                  className="text-4xl font-extralight text-sky-200/90 italic text-shadow-lg"
+                >
+                  Type & Compete
+                </motion.h1>
+                <span className="text-2xl">Built </span>{" "}
+                <span>
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      layout
+                      key={arr[i]}
+                      className="md:text-4xl text-2xl font-extrabold text-sky-200/90 inline-block italic"
+                      initial={{ x: 0, y: 5, opacity: 0 }}
+                      animate={{ x: 0, y: 0, opacity: 1 }}
+                      exit={{ x: 0, y: -5, opacity: 0 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      {arr[i]}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
+              </div>
+              <hr className="border-sky-200/20 border-dashed border-[1px] w-screen" />
             </div>
-            <hr className="hidden md:block border-sky-200/20 border-dashed border-[1px] w-screen" />
             <motion.div
               initial={{ opacity: 0, borderTop: "20px solid transparent" }}
               whileInView={{ opacity: 1, borderTop: "0px solid transparent" }}
