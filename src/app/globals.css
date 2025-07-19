@@ -107,3 +107,40 @@ html {
     transform: translate(75%, 60%) rotate(-45deg);
   }
 }
+
+.placeholder {
+  position: absolute;
+  left: 50px;
+  transform: translateY(0%);
+  color: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  transition: color 0.3s, transform 0.3s, font-size 0.3s;
+  font-size: 16px;
+}
+
+.inputText:focus + .placeholder,
+.inputText:not(:placeholder-shown) + .placeholder {
+  color: #ffffff;
+  transform: translateY(-100%);
+  background-color: #3a404b;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.inputText:-webkit-autofill,
+.inputText:-webkit-autofill:focus,
+.inputText:-webkit-autofill:hover,
+.inputText:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px rgba(42, 48, 59, 1) inset !important; /* 0.3 for 30% opacity */
+  box-shadow: 0 0 0 1000px rgba(42, 48, 59, 1) inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #fff !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+  background: transparent !important; /* Not always respected due to browser */
+}
+
+.inputText:autofill {
+  background-color: transparent !important; /* For FF, not always respected */
+  color: #fff !important;
+}

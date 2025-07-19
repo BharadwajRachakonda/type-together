@@ -1,6 +1,10 @@
 "use server";
-import { signIn, createUser } from "@/auth";
+import { signIn, signOut, createUser } from "@/auth";
 import { AuthError } from "next-auth";
+
+export const signOutUser = async () => {
+  await signOut({ redirectTo: "/" });
+};
 
 export async function authenticate(
   prevState: string | undefined,
