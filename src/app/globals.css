@@ -144,3 +144,7 @@ html {
   background-color: transparent !important; /* For FF, not always respected */
   color: #fff !important;
 }
+
+.force-overflow {
+  overflow-y: scroll !important;
+}

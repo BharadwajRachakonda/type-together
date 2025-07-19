@@ -19,9 +19,9 @@ function SignupForm() {
       initial={{ opacity: 0, filter: "blur(10px)" }}
       animate={{ opacity: 1, filter: "blur(0px)" }}
       transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-      className="flex flex-col gap-4 md:gap-8 items-center justify-center h-screen"
+      className="flex flex-col gap-4 md:gap-8 items-center justify-center h-svh"
     >
-      <h1 className="text-4xl font-bold">Type Together - SignUp</h1>
+      <h1 className="text-2xl md:text-4xl font-bold">Type Together - SignUp</h1>
       <form
         action={formAction}
         className="flex flex-col gap-8 justify-center p-10 md:text-base transition-all duration-300 bg-gray-900/65 glass backdrop-saturate-200 backdrop-brightness-200 backdrop-blur-md saturate-100 rounded-[50px]"

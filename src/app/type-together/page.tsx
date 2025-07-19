@@ -466,7 +466,7 @@ function Page() {
   }, [end]);
 
   return (
-    <div className="overflow-hidden max-h-screen">
+    <div className="overflow-hidden h-svh">
       <Toaster position="top-left" />
       <motion.div
         layout

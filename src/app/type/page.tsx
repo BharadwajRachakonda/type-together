@@ -13,6 +13,7 @@ import { faRotateLeft, faPlay } from "@fortawesome/free-solid-svg-icons";
 import Loading from "@/app/components/Loading";
 import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "next-auth/react";
+import { addRecord } from "../lib/data";
 
 const Page = () => {
   const letterWidths: Record<string, number> = {
@@ -128,6 +129,15 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
+    if (end) {
+      const adding = async () => {
+        await addRecord(session?.user?.email || "", speed, accuracy);
+      };
+      adding();
+    }
+  }, [end]);
+
+  useEffect(() => {
     if (written.length === 0 || text.length === 0) {
       setDisplayText(text);
       return;
@@ -234,7 +244,7 @@ const Page = () => {
   return (
     <div className="relative top-28 md:top-auto">
       <LayoutGroup>
-        <motion.div layout>
+        <motion.div layout className="h-svh">
           <Toaster position="top-left" />
           <motion.div
             layout
@@ -247,7 +257,7 @@ const Page = () => {
             initial={{ y: 50, filter: "blur(10px)" }}
             animate={{ y: 0, filter: "blur(0px)" }}
             transition={{ duration: 3, type: "spring", stiffness: 100 }}
-            className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center max-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]"
+            className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center p-8 pb-20 gap-4 sm:p-20 font-[family-name:var(--font-geist-sans)]"
           >
             <h1 className="text-4xl font-bold">Type Test</h1>
 
