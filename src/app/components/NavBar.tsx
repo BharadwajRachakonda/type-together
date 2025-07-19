@@ -19,6 +19,7 @@ const links = [
 
 export default function NavBar() {
   const pathname = usePathname();
+  const same = ["/profile", "/signup", "/login"];
   // const [mounted, setMounted] = useState(false);
   // useEffect(() => setMounted(true), []);
 
@@ -42,7 +43,10 @@ export default function NavBar() {
                   <Link
                     href={link.href}
                     className={`flex flex-col items-center group cursor-pointer ${
-                      pathname === link.href ? "text-blue-300" : "text-white"
+                      pathname === link.href ||
+                      (same.includes(pathname) && link.href === "/login")
+                        ? "text-blue-300"
+                        : "text-white"
                     }`}
                   >
                     <motion.div
@@ -56,7 +60,9 @@ export default function NavBar() {
                       }}
                       layout
                     >
-                      {pathname === link.href && (
+                      {(pathname === link.href ||
+                        (same.includes(pathname) &&
+                          link.href === "/login")) && (
                         <motion.div
                           layoutId="active"
                           className="h-2 w-2 rounded-full bg-red-500"
@@ -67,7 +73,8 @@ export default function NavBar() {
                         className="md:h-10 h-6 m-2"
                       />
                     </motion.div>
-                    {pathname === link.href && (
+                    {(pathname === link.href ||
+                      (same.includes(pathname) && link.href === "/login")) && (
                       <motion.p
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
