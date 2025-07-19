@@ -24,12 +24,8 @@ export default async function Page() {
             signout
           </button>
         </form>
-        {chartData && (
-          <>
-            {/* <BarChart data={chartData} /> */}
-            <LineChart data={chartData} />
-          </>
-        )}
+        {/* <BarChart data={chartData} /> */}
+        {chartData && <LineChart data={chartData} />}
         <table className="w-full text-center max-w-2xl border-separate border-spacing-2">
           <thead>
             <tr>

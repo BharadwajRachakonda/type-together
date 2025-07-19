@@ -51,7 +51,7 @@ function LineChart({
     },
   };
   return (
-    <div className="h-72 w-full max-w-2xl">
+    <div className="h-76 w-full max-w-2xl overflow-hidden">
       <Line options={options} data={data} />
     </div>
   );
