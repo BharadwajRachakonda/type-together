@@ -1,6 +1,5 @@
 import { signOutUser } from "../lib/action";
 import { auth } from "@/auth";
-import { authConfig } from "@/auth.config";
 
 export default async function Page() {
   const session = await auth();

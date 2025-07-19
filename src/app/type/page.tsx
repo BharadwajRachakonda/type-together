@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateLeft, faPlay } from "@fortawesome/free-solid-svg-icons";
 import Loading from "@/app/components/Loading";
 import toast, { Toaster } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 const Page = () => {
   const letterWidths: Record<string, number> = {
@@ -221,6 +222,14 @@ const Page = () => {
 
     setAccuracy(Math.round(((written.length - wrong) / written.length) * 100));
   }, [written, text]);
+
+  const { data: session, status } = useSession();
+  if (status === "loading") {
+    return <div>loading...</div>;
+  }
+  if (!session || !session.user) {
+    return <div>Not signed in</div>;
+  }
 
   return (
     <div className="relative top-28 md:top-auto">
