@@ -1,7 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
-import type { Session } from "next-auth";
 
 export const metadata: Metadata = {
   title: "Test",
@@ -41,12 +40,10 @@ export const metadata: Metadata = {
   ],
 };
 
-export default function layout({
+export default function Layout({
   children,
-  session,
 }: Readonly<{
   children: React.ReactNode;
-  session: Session | null;
 }>) {
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+  return <SessionProvider>{children}</SessionProvider>;
 }
