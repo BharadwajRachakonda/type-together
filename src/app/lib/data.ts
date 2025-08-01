@@ -85,3 +85,35 @@ export async function get10Records(email: string) {
     throw new Error("Failed to fetch records.");
   }
 }
+
+export async function getTop10UsersAndCurrentRank(email: string) {
+  try {
+    const topUsers = await sql`
+      SELECT email, MAX(speed) AS avg_speed, MAX(accuracy) AS avg_accuracy
+      FROM typing_records
+      GROUP BY email
+      ORDER BY avg_speed DESC, avg_accuracy DESC
+      LIMIT 10
+    `;
+
+    const currentUserEmail = email;
+    if (!currentUserEmail) {
+      throw new Error("Current user email is not set.");
+    }
+
+    const currentUserRank = await sql`
+      SELECT rank() OVER (ORDER BY MAX(speed) DESC, MAX(accuracy) DESC) AS rank
+      FROM typing_records
+      WHERE email = ${currentUserEmail}
+    `;
+
+    return {
+      topUsers,
+      currentUserRank:
+        currentUserRank.length > 0 ? currentUserRank[0].rank : null,
+    };
+  } catch (error) {
+    console.error("Failed to fetch top users:", error);
+    throw new Error("Failed to fetch top users.");
+  }
+}

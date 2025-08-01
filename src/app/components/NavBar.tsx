@@ -19,7 +19,7 @@ const links = [
 
 export default function NavBar() {
   const pathname = usePathname();
-  const same = ["/profile", "/signup", "/login"];
+  const same = ["/profile", "/signup", "/login", "/profile/leaderboard"];
   // const [mounted, setMounted] = useState(false);
   // useEffect(() => setMounted(true), []);
 
