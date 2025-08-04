@@ -18,16 +18,20 @@ async function Page() {
       <div className="mb-4">
         <h2 className="text-xl font-semibold">Your Rank: {currentUserRank}</h2>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-3">
         {topUsers.map((user, index) => (
           <div
             key={index}
-            className="glass bg-sky-600/15 flex items-center justify-center gap-5 p-2 px-8"
+            className="glass bg-gray-900/65 flex items-center justify-center p-2 px-8"
           >
             <div>{index + 1}</div>
-            <div>{user.email}</div>
-            <div>{user.avg_speed} WPM</div>
-            <div>{user.avg_accuracy}%</div>
+            <div className="w-32 font-medium text-center">{user.email}</div>
+            <div className="w-16 font-extralight text-center">
+              {user.avg_speed} WPM
+            </div>
+            <div className="w-14 font-extralight text-center">
+              {user.avg_accuracy}%
+            </div>
           </div>
         ))}
       </div>
