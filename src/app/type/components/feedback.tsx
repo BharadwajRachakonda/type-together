@@ -5,6 +5,7 @@ function FeedbackToast({ email, toastId }: { email: string; toastId: string }) {
   const [Data, setData] = useState({
     email: email,
     description: "",
+    Type: "", // can take 3 values error, general, recommendation
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,6 +51,24 @@ function FeedbackToast({ email, toastId }: { email: string; toastId: string }) {
         className="border rounded-full p-2 w-full resize-none"
         rows={1}
       />
+      <select
+        name="Type"
+        id="Type"
+        value={Data.Type}
+        onChange={(e) => setData({ ...Data, Type: e.target.value })}
+        className="border rounded-full p-2 w-full"
+      >
+        <option value="general" className="text-black">
+          General
+        </option>
+        <option value="error" className="text-black">
+          Error
+        </option>
+        <option value="recommendation" className="text-black">
+          Recommendation
+        </option>
+      </select>
+
       <div className="flex justify-around">
         <button
           type="submit"
