@@ -5,7 +5,7 @@ function FeedbackToast({ email, toastId }: { email: string; toastId: string }) {
   const [Data, setData] = useState({
     email: email,
     description: "",
-    Type: "", // can take 3 values error, general, recommendation
+    type: "", // can take 3 values error, general, recommendation
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
