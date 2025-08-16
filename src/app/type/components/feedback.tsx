@@ -52,10 +52,10 @@ function FeedbackToast({ email, toastId }: { email: string; toastId: string }) {
         rows={1}
       />
       <select
-        name="Type"
-        id="Type"
-        value={Data.Type}
-        onChange={(e) => setData({ ...Data, Type: e.target.value })}
+        name="type"
+        id="type"
+        value={Data.type}
+        onChange={(e) => setData({ ...Data, type: e.target.value })}
         className="border rounded-full p-2 w-full"
       >
         <option value="general" className="text-black">
