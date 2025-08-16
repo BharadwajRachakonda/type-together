@@ -14,6 +14,7 @@ import Loading from "@/app/components/Loading";
 import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { addRecord } from "../lib/data";
+import { openFeedbackToast } from "./components/feedback";
 
 const Page = () => {
   const letterWidths: Record<string, number> = {
@@ -421,19 +422,34 @@ const Page = () => {
                 spellCheck="false"
                 autoFocus
               ></textarea>
-
-              <div className="flex items-center gap-8 my-4">
-                <div className=" text-lg font-medium">
-                  <span className="px-4 py-2 bg-gray-600/65 rounded-xl shadow-[0_4px_16px_rgba(255,255,255,0.10)] font-bold text-blue-400/50">
-                    {speed}
-                  </span>{" "}
-                  WPM
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex items-center gap-8 my-4">
+                  <div className=" text-lg font-medium">
+                    <span className="px-4 py-2 bg-gray-600/65 rounded-xl shadow-[0_4px_16px_rgba(255,255,255,0.10)] font-bold text-blue-400/50">
+                      {speed}
+                    </span>{" "}
+                    WPM
+                  </div>
+                  <div className="text-lg font-medium">
+                    <span className="px-4 py-2 bg-gray-600/65 rounded-xl shadow-[0_4px_16px_rgba(255,255,255,0.10)] font-bold text-blue-400/50">
+                      {accuracy}
+                    </span>
+                    %
+                  </div>
                 </div>
-                <div className="text-lg font-medium">
-                  <span className="px-4 py-2 bg-gray-600/65 rounded-xl shadow-[0_4px_16px_rgba(255,255,255,0.10)] font-bold text-blue-400/50">
-                    {accuracy}
-                  </span>
-                  %
+                <div className="items-center justify-center flex flex-col">
+                  <button
+                    onClick={() => {
+                      if (!session || !session.user || !session.user.email) {
+                        toast.error("Please log in to give feedback.");
+                        return;
+                      }
+                      openFeedbackToast(session.user.email);
+                    }}
+                    className="cursor-pointer z-50 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200 px-6 py-3"
+                  >
+                    Give Feedback
+                  </button>
                 </div>
               </div>
             </div>

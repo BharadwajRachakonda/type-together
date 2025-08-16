@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     AUTH_SECRET: process.env.AUTH_SECRET,
     POSTGRES_URL: process.env.POSTGRES_URL,
     NEXT_AUTH_SECRET: process.env.NEXT_AUTH_SECRET,
+    NEXT_PUBLIC_SNOW: process.env.NEXT_PUBLIC_SNOW,
   },
 };
 
