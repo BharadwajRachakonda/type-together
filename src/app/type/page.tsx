@@ -15,6 +15,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { addRecord } from "../lib/data";
 import { openFeedbackToast } from "./components/feedback";
+import { set } from "zod";
 
 const Page = () => {
   const letterWidths: Record<string, number> = {
@@ -234,6 +235,24 @@ const Page = () => {
     setAccuracy(Math.round(((written.length - wrong) / written.length) * 100));
   }, [written, text]);
 
+  const [predictedData, setPredictedData] = useState(null);
+  const [predicting, setPredicting] = useState(false);
+
+  useEffect(() => {
+    if (predictedData) {
+      toast.success(
+        `If you are consistent for next ${predictedData} days, you will achieve your goal!`,
+        {
+          duration: 5000, // 5 seconds
+        }
+      );
+    }
+
+    return () => {
+      setPredictedData(null);
+    };
+  }, [predictedData]);
+
   const { data: session, status } = useSession();
   if (status === "loading") {
     return <div>loading...</div>;
@@ -379,6 +398,7 @@ const Page = () => {
                             onClick={() => {
                               document.getElementById("text")?.focus();
                               toast.success("Continue typing!");
+                              setPredictedData(null);
                             }}
                             className="cursor-pointer px-5 py-2 md:hover:scale-110 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200"
                           >
@@ -437,7 +457,7 @@ const Page = () => {
                     %
                   </div>
                 </div>
-                <div className="items-center justify-center flex flex-col">
+                <div className="items-center justify-center gap-4 flex flex-row flex-wrap">
                   <button
                     onClick={() => {
                       if (!session || !session.user || !session.user.email) {
@@ -450,6 +470,101 @@ const Page = () => {
                   >
                     Give Feedback
                   </button>
+                  {end && predicting && (
+                    <div className="top-0 left-0 bottom-0 right-0 flex flex-col gap-4 items-center justify-center fixed z-50 bg-gray-700/65 backdrop-blur-md">
+                      <div className="bg-gray-900 p-8 px-4 rounded-4xl flex flex-col items-center justify-center gap-4">
+                        <h2 className="text-2xl font-bold text-white">
+                          Prediction Form
+                        </h2>
+                        <form
+                          className="flex flex-col gap-4"
+                          onSubmit={async (e) => {
+                            e.preventDefault();
+                            const formData = new FormData(
+                              e.target as HTMLFormElement
+                            );
+                            const desiredSpeed = parseInt(
+                              (formData.get("desired_speed") ?? "0") as string
+                            );
+                            const desiredAcc = parseInt(
+                              (formData.get("desired_acc") ?? "0") as string
+                            );
+                            const response = await fetch(
+                              "https://flask-99r1.onrender.com/predict",
+                              {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                  prev_speed: speed,
+                                  prev_acc: accuracy,
+                                  desired_speed: desiredSpeed,
+                                  desired_acc: desiredAcc,
+                                  time: parseInt(
+                                    (formData.get("time") ?? "0") as string
+                                  ),
+                                }),
+                              }
+                            );
+                            const _data = await response.json();
+                            console.log(_data);
+                            setPredictedData(() => _data.predicted_value);
+                            setPredicting(false);
+                          }}
+                        >
+                          <input
+                            name="desired_speed"
+                            type="number"
+                            className="border border-gray-300 rounded-full p-2"
+                            placeholder="Enter Your Desired Speed"
+                          />
+                          <input
+                            name="desired_acc"
+                            type="number"
+                            className="border border-gray-300 rounded-full p-2"
+                            placeholder="Enter Your Desired Accuracy"
+                          />
+                          <input
+                            name="time"
+                            type="number"
+                            className="border border-gray-300 rounded-full p-2"
+                            placeholder="Enter Avg Time spent per day"
+                          />
+                          <div className="flex gap-2 flex-wrap justify-around">
+                            <button
+                              type="submit"
+                              className="cursor-pointer z-50 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200 px-6 py-3"
+                            >
+                              Submit
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setPredictedData(null);
+                                setPredicting(false);
+                              }}
+                              className="cursor-pointer z-50 bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200 px-6 py-3"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                  {end && (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPredicting(true);
+                      }}
+                      className="cursor-pointer bg-gray-600/65 text-white rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.15)] hover:bg-gray-700 transition-all duration-200 px-6 py-3"
+                    >
+                      Predict
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
